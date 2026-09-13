@@ -1,0 +1,21 @@
+{
+  "bot": {
+    "token": "YOUR_BOT_TOKEN_HERE",
+    "chat_id": -100xxxxxxxx,
+    "admin_id": xxxxxxxxxx
+  },
+  "auth": {
+    "auth_secret": "YOUR_AUTH_SECRET_HERE",
+    "auth_worker_url": "https://your-worker.workers.dev"
+  },
+  "github": {
+    "token": "YOUR_GITHUB_TOKEN_HERE",
+    "repo": "username/repo",
+    "branch": "main"
+  },
+  "cloudflare": {
+    "api_token": "YOUR_CF_API_TOKEN_HERE",
+    "account_id": "YOUR_CF_ACCOUNT_ID_HERE",
+    "kv_namespace_id": "YOUR_KV_NAMESPACE_ID_HERE"
+  }
+}
