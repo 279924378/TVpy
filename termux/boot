@@ -1,0 +1,10 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Termux:Boot 开机自启脚本
+# 放到 ~/.termux/boot/ 目录下，安装Termux:Boot插件后开机自动执行
+
+# 等待网络就绪
+sleep 10
+
+# 启动段德机器人
+cd ~/段德机器人项目
+bash termux_start.sh >> logs/boot.log 2>&1
