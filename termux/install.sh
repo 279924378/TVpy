@@ -7,7 +7,7 @@
 set -e
 
 PROJECT_DIR="$HOME/段德机器人项目"
-ZIP_URL="https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/termux/段德机器人项目_Termux直连版.zip"
+ZIP_URL="https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/termux/duande_termux.zip"
 ZIP_FILE="/tmp/duande_termux.zip"
 
 echo "╔══════════════════════════════════════════════╗"
