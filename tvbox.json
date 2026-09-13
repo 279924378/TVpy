@@ -1,112 +1,85 @@
 {
   "spider": [
     {
-      "name": "123视频",
-      "url": "https://tvbox.ystv.top/py/18%E3%8A%99%EF%B8%8F123%E8%A7%86%E9%A2%91.py",
-      "type": 3
-    },
-    {
       "name": "51K看片",
-      "url": "https://tvbox.ystv.top/py/51K%E7%9C%8B%E7%89%87.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F51K%E7%9C%8B%E7%89%87.py",
       "type": 3
     },
     {
       "name": "91波多",
-      "url": "https://tvbox.ystv.top/py/91%E6%B3%A2%E5%A4%9A.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F91%E6%B3%A2%E5%A4%9A.py",
       "type": 3
     },
     {
       "name": "Didi长视频",
-      "url": "https://tvbox.ystv.top/py/Didi%E9%95%BF%E8%A7%86%E9%A2%91.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8FDidi%E9%95%BF%E8%A7%86%E9%A2%91.py",
       "type": 3
     },
     {
       "name": "JavDB",
-      "url": "https://tvbox.ystv.top/py/JavDB.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8FJavDB.py",
       "type": 3
     },
     {
       "name": "傻傻视频",
-      "url": "https://tvbox.ystv.top/py/%E5%82%BB%E5%82%BB%E8%A7%86%E9%A2%91.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E5%82%BB%E5%82%BB%E8%A7%86%E9%A2%91.py",
       "type": 3
     },
     {
       "name": "可乐影院",
-      "url": "https://tvbox.ystv.top/py/%E5%8F%AF%E4%B9%90%E5%BD%B1%E9%99%A2.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E5%8F%AF%E4%B9%90%E5%BD%B1%E9%99%A2.py",
       "type": 3
     },
     {
       "name": "探索妹妹",
-      "url": "https://tvbox.ystv.top/py/%E6%8E%A2%E7%B4%A2%E5%A6%B9%E5%A6%B9.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E6%8E%A2%E7%B4%A2%E5%A6%B9%E5%A6%B9.py",
       "type": 3
     },
     {
       "name": "春心一动",
-      "url": "https://tvbox.ystv.top/py/%E6%98%A5%E5%BF%83%E4%B8%80%E5%8A%A8.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E6%98%A5%E5%BF%83%E4%B8%80%E5%8A%A8.py",
       "type": 3
     },
     {
       "name": "杏色影视",
-      "url": "https://tvbox.ystv.top/py/%E6%9D%8F%E8%89%B2%E5%BD%B1%E8%A7%86.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E6%9D%8F%E8%89%B2%E5%BD%B1%E8%A7%86.py",
       "type": 3
     },
     {
       "name": "浪巢福地",
-      "url": "https://tvbox.ystv.top/py/%E6%B5%AA%E5%B7%A2%E7%A6%8F%E5%9C%B0.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E6%B5%AA%E5%B7%A2%E7%A6%8F%E5%9C%B0.py",
       "type": 3
     },
     {
       "name": "淫荡女友",
-      "url": "https://tvbox.ystv.top/py/%E6%B7%AB%E8%8D%A1%E5%A5%B3%E5%8F%8B.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E6%B7%AB%E8%8D%A1%E5%A5%B3%E5%8F%8B.py",
       "type": 3
     },
     {
       "name": "潘金连",
-      "url": "https://tvbox.ystv.top/py/%E6%BD%98%E9%87%91%E8%BF%9E.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E6%BD%98%E9%87%91%E8%BF%9E.py",
       "type": 3
     },
     {
       "name": "聚合影视",
-      "url": "https://tvbox.ystv.top/py/%E8%81%9A%E5%90%88%E5%BD%B1%E8%A7%86.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E8%81%9A%E5%90%88%E5%BD%B1%E8%A7%86.py",
       "type": 3
     },
     {
       "name": "谢欲频道",
-      "url": "https://tvbox.ystv.top/py/%E8%B0%A2%E6%AC%B2%E9%A2%91%E9%81%93.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E8%B0%A2%E6%AC%B2%E9%A2%91%E9%81%93.py",
       "type": 3
     },
     {
       "name": "露思AV网",
-      "url": "https://tvbox.ystv.top/py/%E9%9C%B2%E6%80%9DAV%E7%BD%91.py",
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18%E3%8A%99%EF%B8%8F%E9%9C%B2%E6%80%9DAV%E7%BD%91.py",
       "type": 3
     }
   ],
   "sites": [],
-  "parses": [
-    {
-      "name": "盘古",
-      "url": "https://www.playm3u8.cn/jiexi.php?url="
-    },
-    {
-      "name": "789解析",
-      "url": "https://jiexi.789jiexi.com/?url="
-    },
-    {
-      "name": "虾米解析",
-      "url": "https://jx.xmflv.com/?url="
-    },
-    {
-      "name": "淘片解析",
-      "url": "https://jx.yparse.com/index.php?url="
-    }
-  ],
+  "parses": [],
   "lives": [],
-  "ads": [],
-  "doh": [
-    "https://dns.alidns.com/dns-query",
-    "https://doh.pub/dns-query"
-  ],
-  "ijk": {},
-  "logo": "https://tvbox.ystv.top/logo.png",
-  "wallpaper": "https://tvbox.ystv.top/wallpaper.jpg"
+  "ijk": [],
+  "logo": "",
+  "wallpaper": ""
 }
