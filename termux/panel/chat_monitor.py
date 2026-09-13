@@ -1,10 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 # ============================================================
-# 段德机器人 - 群消息监听器
+# 段德机器人 - 群消息监听器 v2（自动代理支持）
 # 通过Telegram API获取群消息，写入chat_log.json供面板展示
 # ============================================================
 
-import json, os, sys, time, urllib.request, urllib.error
+import json, os, sys, time, urllib.request, urllib.error, socket
 from datetime import datetime
 
 PROJECT_DIR = os.path.expanduser("~/段德机器人项目")
@@ -12,23 +12,45 @@ SCRIPTS_DIR = os.path.join(PROJECT_DIR, "scripts")
 LOG_DIR = os.path.join(PROJECT_DIR, "logs")
 CONFIG_FILE = os.path.join(SCRIPTS_DIR, "tg_config.json")
 CHAT_LOG_FILE = os.path.join(LOG_DIR, "chat_log.json")
-MAX_MESSAGES = 200  # 最多保留200条消息
+MAX_MESSAGES = 200
 
 os.makedirs(LOG_DIR, exist_ok=True)
+
+def detect_proxy():
+    """自动检测本地代理端口"""
+    for port in [7890, 10809, 8080, 1080, 7891, 1087]:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(1)
+            result = s.connect_ex(("127.0.0.1", port))
+            s.close()
+            if result == 0:
+                return f"http://127.0.0.1:{port}"
+        except:
+            pass
+    return None
+
+PROXY_URL = detect_proxy()
+if PROXY_URL:
+    proxy_handler = urllib.request.ProxyHandler({"http": PROXY_URL, "https": PROXY_URL})
+    opener = urllib.request.build_opener(proxy_handler)
+    urllib.request.install_opener(opener)
+    print(f"📡 使用代理: {PROXY_URL}")
+else:
+    print("📡 未检测到代理，使用直连")
 
 def load_config():
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def tg_api(token, method, params=None):
-    """调用Telegram Bot API"""
     url = f"https://api.telegram.org/bot{token}/{method}"
     if params:
         import urllib.parse
         url += "?" + urllib.parse.urlencode(params)
     try:
         req = urllib.request.Request(url)
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=20) as resp:
             return json.loads(resp.read())
     except Exception as e:
         return {"ok": False, "error": str(e)}
@@ -48,16 +70,20 @@ def save_chat_log(messages):
 
 def main():
     print("📡 群消息监听器启动中...")
-    config = load_config()
-    token = config["bot"]["token"]
-    target_chat_id = str(config["bot"]["chat_id"])
+    try:
+        config = load_config()
+        token = config["bot"]["token"]
+        target_chat_id = str(config["bot"]["chat_id"])
+    except Exception as e:
+        print(f"❌ 读取配置失败: {e}")
+        return
     
-    # 获取机器人信息
     me = tg_api(token, "getMe")
     if me.get("ok"):
         print(f"✅ 机器人: @{me['result']['username']}")
     else:
-        print(f"❌ 获取机器人信息失败: {me}")
+        print(f"❌ 获取机器人信息失败: {me.get('error', me)}")
+        print("   请检查代理是否开启，或网络是否能访问api.telegram.org")
         return
     
     messages = load_chat_log()
@@ -80,7 +106,6 @@ def main():
                         msg = update["message"]
                         chat_id = str(msg.get("chat", {}).get("id", ""))
                         
-                        # 只记录目标群的消息
                         if chat_id == target_chat_id:
                             sender = msg.get("from", {})
                             sender_name = sender.get("first_name", "") or sender.get("username", "未知")
