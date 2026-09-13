@@ -14,7 +14,7 @@ LOG_DIR = os.path.join(PROJECT_DIR, "logs")
 DB_FILE = os.path.join(SCRIPTS_DIR, "user_points.db")
 CHAT_LOG_FILE = os.path.join(LOG_DIR, "chat_log.json")
 PENDING_FILE = os.path.join(SCRIPTS_DIR, "tg_pending_urls.json")
-REFRESH_INTERVAL = 3  # 刷新间隔秒
+REFRESH_INTERVAL = 60  # 刷新间隔秒
 
 # ANSI颜色
 class C:
