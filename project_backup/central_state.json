@@ -1,0 +1,112 @@
+{
+  "containers": {
+    "task_1789005387_0": {
+      "task_id": "task_1789005387_0",
+      "url": "https://www.youtube.com",
+      "proxy_port": 10902,
+      "proxy_node": "🇸🇬 新加坡 01",
+      "workspace": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789005387_0",
+      "output_dir": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789005387_0/output",
+      "xray_pid": 2819,
+      "xray_config": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789005387_0/xray_config.json",
+      "status": "proxy_down",
+      "created_at": "2026-09-10 09:56:34",
+      "last_heartbeat": "2026-09-10 09:58:46"
+    },
+    "queue-watcher": {
+      "task_id": "queue-watcher",
+      "url": "",
+      "proxy_port": 10903,
+      "proxy_node": "🇸🇬 新加坡 01",
+      "workspace": "/runtime/user_skills/tvbox-dev/scripts/containers/queue-watcher",
+      "output_dir": "/runtime/user_skills/tvbox-dev/scripts/containers/queue-watcher/output",
+      "xray_pid": 2837,
+      "xray_config": "/runtime/user_skills/tvbox-dev/scripts/containers/queue-watcher/xray_config.json",
+      "status": "proxy_down",
+      "created_at": "2026-09-10 09:56:38",
+      "last_heartbeat": "2026-09-10 10:26:29",
+      "session_id": "queue-watcher"
+    },
+    "task_1789006211_0": {
+      "task_id": "task_1789006211_0",
+      "url": "https://idl.dfswh5.top/dfswh/",
+      "proxy_port": 10904,
+      "proxy_node": "🇸🇬 新加坡 01",
+      "workspace": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_0",
+      "output_dir": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_0/output",
+      "xray_pid": 4000,
+      "xray_config": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_0/xray_config.json",
+      "status": "proxy_down",
+      "created_at": "2026-09-10 10:10:18",
+      "last_heartbeat": "2026-09-10 10:26:31"
+    },
+    "task_1789006211_1": {
+      "task_id": "task_1789006211_1",
+      "url": "https://xjv.jllth3.skin/jllth/",
+      "proxy_port": 10905,
+      "proxy_node": "🇸🇬 新加坡 01",
+      "workspace": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_1",
+      "output_dir": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_1/output",
+      "xray_pid": 4007,
+      "xray_config": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_1/xray_config.json",
+      "status": "proxy_down",
+      "created_at": "2026-09-10 10:10:21",
+      "last_heartbeat": "2026-09-10 10:26:33"
+    },
+    "task_1789006897_0": {
+      "task_id": "task_1789006897_0",
+      "url": "https://www.xnxxx.tv",
+      "proxy_port": 10906,
+      "proxy_node": "🇸🇬 新加坡 01",
+      "workspace": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789006897_0",
+      "output_dir": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789006897_0/output",
+      "xray_pid": 4730,
+      "xray_config": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789006897_0/xray_config.json",
+      "status": "proxy_down",
+      "created_at": "2026-09-10 10:21:49",
+      "last_heartbeat": "2026-09-10 10:26:35"
+    },
+    "connector-cron": {
+      "task_id": "connector-cron",
+      "url": "",
+      "proxy_port": 10902,
+      "proxy_node": "🇸🇬 新加坡 01",
+      "workspace": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/connector-cron",
+      "output_dir": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/connector-cron/output",
+      "xray_pid": 1443,
+      "xray_config": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/connector-cron/xray_config.json",
+      "status": "proxy_down",
+      "created_at": "2026-09-10 10:39:18",
+      "last_heartbeat": "2026-09-10 15:19:59",
+      "session_id": "connector-cron"
+    },
+    "task_1789014717_0": {
+      "task_id": "task_1789014717_0",
+      "url": "https://www.freepornvideos.xxx/zh/networks/nubiles-porn-com/",
+      "proxy_port": 10902,
+      "proxy_node": "🇸🇬 新加坡 01",
+      "workspace": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789014717_0",
+      "output_dir": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789014717_0/output",
+      "xray_pid": 1454,
+      "xray_config": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789014717_0/xray_config.json",
+      "status": "running",
+      "created_at": "2026-09-10 12:32:02",
+      "last_heartbeat": "2026-09-10 12:36:48"
+    },
+    "delayed-trigger": {
+      "task_id": "delayed-trigger",
+      "url": "",
+      "proxy_port": 10903,
+      "proxy_node": "🇭🇰 香港 01",
+      "workspace": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/delayed-trigger",
+      "output_dir": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/delayed-trigger/output",
+      "xray_pid": 3967,
+      "xray_config": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/delayed-trigger/xray_config.json",
+      "status": "proxy_down",
+      "created_at": "2026-09-10 13:25:00",
+      "last_heartbeat": "2026-09-10 14:09:48",
+      "session_id": "delayed-trigger"
+    }
+  },
+  "last_update": "2026-09-13 23:02:18"
+}
