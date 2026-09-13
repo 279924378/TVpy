@@ -21,8 +21,13 @@ cd "$PROJECT_DIR" && nohup bash scripts/watchdog.sh >> logs/watchdog.log 2>&1 &
 cd "$SCRIPTS_DIR" && nohup bash push_tasks.sh daemon >> "$LOG_DIR/task_upload.log" 2>&1 &
 cd "$SCRIPTS_DIR" && nohup bash repo_sync.sh daemon >> "$LOG_DIR/repo_sync.log" 2>&1 &
 
-# 等待服务启动
-sleep 8
+# 等待60秒让机器人完全启动
+for i in $(seq 1 60); do
+    if pgrep -f "tg_bot_service.py" >/dev/null 2>&1; then
+        break
+    fi
+    sleep 1
+done
 
 # 自动进入机器人面板（前台）
 cd "$SCRIPTS_DIR" && python3 tui_panel.py
