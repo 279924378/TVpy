@@ -1,0 +1,130 @@
+[
+  {
+    "url": "https://www.okgo88.com",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-12 22:28:06",
+    "source": "manual_sync"
+  },
+  {
+    "url": "https://cil.klyy3.wiki/klyy/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 12:29:21",
+    "source": "manual_sync"
+  },
+  {
+    "url": "https://goinav.com/",
+    "status": "failed",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 12:44:14",
+    "source": "manual_sync",
+    "fail_reason": "SSL握手被服务器关闭，所有访问方式失败，疑似站点关停"
+  },
+  {
+    "url": "https://www.pjl7.best/pjl/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 12:54:54",
+    "source": "manual_sync"
+  },
+  {
+    "url": "https://ayw.lcfd3.lat/lcfd/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 13:11:11",
+    "source": "manual_sync"
+  },
+  {
+    "url": "https://www.91bd3.skin/91bd/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 13:53:48",
+    "source": "tg_bot_trigger",
+    "processing_start": "2026-09-13 06:10:00",
+    "done_time": "2026-09-13 06:14:00"
+  },
+  {
+    "url": "https://hpu.cxyd9.hair/cxyd/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 14:26:06",
+    "source": "tg_bot_trigger",
+    "processing_start": "2026-09-13 06:30:00",
+    "done_time": "2026-09-13 06:35:00"
+  },
+  {
+    "url": "https://cbl.ydny4.autos/ydny/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 14:35:36",
+    "source": "tg_bot_trigger",
+    "processing_start": "2026-09-13 06:40:00",
+    "done_time": "2026-09-13 06:45:00"
+  },
+  {
+    "url": "https://www.xsys5.makeup/xsys/",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "status": "done",
+    "time": "2026-09-13 14:48:25",
+    "processing_start": "2026-09-13 06:50:00",
+    "done_time": "2026-09-13 06:55:00"
+  },
+  {
+    "url": "https://www.tongtoubani.cfd/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 14:52:46",
+    "source": "tg_bot_trigger",
+    "processing_start": "2026-09-13 07:00:00",
+    "done_time": "2026-09-13 07:10:00"
+  },
+  {
+    "url": "https://gms.didicsp6.casa/didicsp/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 15:01:33",
+    "source": "tg_bot_trigger",
+    "processing_start": "2026-09-13 07:15:00",
+    "done_time": "2026-09-13 07:25:00"
+  },
+  {
+    "url": "https://ron.lsavw8.work/lsavw/",
+    "from_user": "瓜",
+    "time": "2026-09-13 07:32:00",
+    "status": "done",
+    "processing_start": "2026-09-13 07:32:00",
+    "done_time": "2026-09-13 07:40:00"
+  },
+  {
+    "url": "https://glm.123sp3.fit/123sp/",
+    "from_user": "瓜",
+    "time": "2026-09-13 21:42:41",
+    "status": "done",
+    "session": "main_agent",
+    "result": "四壳Spider已生成（内页失效版）"
+  },
+  {
+    "url": "https://glm.123sp3.fit/cn/home/web/",
+    "status": "done",
+    "from_user": "瓜",
+    "user_id": "8766992921",
+    "time": "2026-09-13 22:14:41",
+    "source": "bot_sync_moved",
+    "processing_session": "38441491872087810",
+    "processing_start": "2026-09-13 22:25:29",
+    "done_time": "2026-09-13 22:43:51",
+    "done_session": "38441491872087810"
+  }
+]
