@@ -1,290 +1,112 @@
 {
-  "spider": "",
-  "logo": "https://img.freepik.com/free-vector/cute-dolphin-swimming-cartoon-vector-icon-illustration-animal-nature-icon-isolated-flat-vector_138676-12582.jpg?semt=ais_hybrid&w=740&q=80",
-  "wallpaper": "http://tool.teyonds.com/api",
-  "sites": [
+  "spider": [
     {
-      "key": "18㊙️91波多",
-      "name": "18㊙️91波多",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️91波多.py"
+      "name": "123视频",
+      "url": "https://tvbox.ystv.top/py/18%E3%8A%99%EF%B8%8F123%E8%A7%86%E9%A2%91.py",
+      "type": 3
     },
     {
-      "key": "18㊙️JavDB",
-      "name": "18㊙️JavDB",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️JavDB.py"
+      "name": "51K看片",
+      "url": "https://tvbox.ystv.top/py/51K%E7%9C%8B%E7%89%87.py",
+      "type": 3
     },
     {
-      "key": "18㊙️傻傻视频",
-      "name": "18㊙️傻傻视频",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️傻傻视频.py"
+      "name": "91波多",
+      "url": "https://tvbox.ystv.top/py/91%E6%B3%A2%E5%A4%9A.py",
+      "type": 3
     },
     {
-      "key": "18㊙️可乐影院",
-      "name": "18㊙️可乐影院",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️可乐影院.py"
+      "name": "Didi长视频",
+      "url": "https://tvbox.ystv.top/py/Didi%E9%95%BF%E8%A7%86%E9%A2%91.py",
+      "type": 3
     },
     {
-      "key": "18㊙️浪巢福地",
-      "name": "18㊙️浪巢福地",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️浪巢福地.py"
+      "name": "JavDB",
+      "url": "https://tvbox.ystv.top/py/JavDB.py",
+      "type": 3
     },
     {
-      "key": "18㊙️潘金连",
-      "name": "18㊙️潘金连",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️潘金连.py"
+      "name": "傻傻视频",
+      "url": "https://tvbox.ystv.top/py/%E5%82%BB%E5%82%BB%E8%A7%86%E9%A2%91.py",
+      "type": 3
     },
     {
-      "key": "18㊙️春心一动",
-      "name": "18㊙️春心一动",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️春心一动.py"
+      "name": "可乐影院",
+      "url": "https://tvbox.ystv.top/py/%E5%8F%AF%E4%B9%90%E5%BD%B1%E9%99%A2.py",
+      "type": 3
     },
     {
-      "key": "18㊙️淫荡女友",
-      "name": "18㊙️淫荡女友",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️淫荡女友.py"
+      "name": "探索妹妹",
+      "url": "https://tvbox.ystv.top/py/%E6%8E%A2%E7%B4%A2%E5%A6%B9%E5%A6%B9.py",
+      "type": 3
     },
     {
-      "key": "18㊙️杏色影视",
-      "name": "18㊙️杏色影视",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️杏色影视.py"
+      "name": "春心一动",
+      "url": "https://tvbox.ystv.top/py/%E6%98%A5%E5%BF%83%E4%B8%80%E5%8A%A8.py",
+      "type": 3
     },
     {
-      "key": "18㊙️谢欲频道",
-      "name": "18㊙️谢欲频道",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️谢欲频道.py"
+      "name": "杏色影视",
+      "url": "https://tvbox.ystv.top/py/%E6%9D%8F%E8%89%B2%E5%BD%B1%E8%A7%86.py",
+      "type": 3
     },
     {
-      "key": "18㊙️Didi长视频",
-      "name": "18㊙️Didi长视频",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️Didi长视频.py"
+      "name": "浪巢福地",
+      "url": "https://tvbox.ystv.top/py/%E6%B5%AA%E5%B7%A2%E7%A6%8F%E5%9C%B0.py",
+      "type": 3
     },
     {
-      "key": "18㊙️露思AV网",
-      "name": "18㊙️露思AV网",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️露思AV网.py"
+      "name": "淫荡女友",
+      "url": "https://tvbox.ystv.top/py/%E6%B7%AB%E8%8D%A1%E5%A5%B3%E5%8F%8B.py",
+      "type": 3
     },
     {
-      "key": "18㊙️探索妹妹",
-      "name": "18㊙️探索妹妹",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️探索妹妹.py"
+      "name": "潘金连",
+      "url": "https://tvbox.ystv.top/py/%E6%BD%98%E9%87%91%E8%BF%9E.py",
+      "type": 3
     },
     {
-      "key": "18㊙️51K看片",
-      "name": "18㊙️51K看片",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️51K看片.py"
+      "name": "聚合影视",
+      "url": "https://tvbox.ystv.top/py/%E8%81%9A%E5%90%88%E5%BD%B1%E8%A7%86.py",
+      "type": 3
     },
     {
-      "key": "18㊙️聚合影视",
-      "name": "18㊙️聚合影视",
-      "type": 3,
-      "api": "https://ghfast.top/https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️聚合影视.py"
+      "name": "谢欲频道",
+      "url": "https://tvbox.ystv.top/py/%E8%B0%A2%E6%AC%B2%E9%A2%91%E9%81%93.py",
+      "type": 3
+    },
+    {
+      "name": "露思AV网",
+      "url": "https://tvbox.ystv.top/py/%E9%9C%B2%E6%80%9DAV%E7%BD%91.py",
+      "type": 3
     }
   ],
+  "sites": [],
   "parses": [
     {
       "name": "盘古",
-      "type": 0,
-      "url": "https://www.playm3u8.cn/jiexi.php?url=",
-      "ext": {
-        "header": {
-          "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-        }
-      }
+      "url": "https://www.playm3u8.cn/jiexi.php?url="
     },
     {
-      "name": "789解析1",
-      "type": 0,
-      "url": "https://jiexi.789jiexi.icu:4433/?url="
-    },
-    {
-      "name": "789解析2",
-      "type": 0,
+      "name": "789解析",
       "url": "https://jiexi.789jiexi.com/?url="
     },
     {
       "name": "虾米解析",
-      "type": 0,
       "url": "https://jx.xmflv.com/?url="
     },
     {
       "name": "淘片解析",
-      "type": 0,
       "url": "https://jx.yparse.com/index.php?url="
-    },
-    {
-      "name": "解析1",
-      "type": 0,
-      "url": "https://huayong.net/999/?v="
-    },
-    {
-      "name": "解析2",
-      "type": 0,
-      "url": "https://jx.m3u8.tv/jiexi/?url="
-    },
-    {
-      "name": "解析3",
-      "type": 0,
-      "url": "https://t2.qlplayer.cyou/player/analysis.php?v="
-    },
-    {
-      "name": "解析4",
-      "type": 0,
-      "url": "https://www.ckplayer.vip/jiexi/?url="
-    },
-    {
-      "name": "解析5",
-      "type": 0,
-      "url": "https://nm.xxxc137.top/static/player/artplayer.html?url="
-    },
-    {
-      "name": "解析6",
-      "type": 0,
-      "url": "https://www.yemu.xyz/?url="
-    },
-    {
-      "name": "冰豆",
-      "type": 0,
-      "url": "https://bd.jx.cn/?url="
-    },
-    {
-      "name": "爱酷",
-      "type": 0,
-      "url": "https://jx.zhanlangbu.com/?url="
-    },
-    {
-      "name": "云解析",
-      "type": 0,
-      "url": "https://jx.yparse.com/index.php?url=",
-      "ext": {
-        "header": {
-          "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-        }
-      }
-    },
-    {
-      "name": "777",
-      "type": 0,
-      "url": "https://jx.jsonplayer.com/player/?url=",
-      "ext": {
-        "header": {
-          "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-        }
-      }
-    },
-    {
-      "name": "-剖云-",
-      "type": 0,
-      "url": "https://www.kkvip2022.com/vip/jiexi1/?url=",
-      "ext": {
-        "header": {
-          "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-        }
-      }
-    },
-    {
-      "name": "-全看-",
-      "type": 0,
-      "url": "https://jx.quankan.app/?url=",
-      "ext": {
-        "header": {
-          "user-agent": "Mozilla/5.0 (Linux; Android 13; V2049A Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/116.0.0.0 Mobile Safari/537.36"
-        }
-      }
     }
-  ],
-  "doh": [
-    {
-      "name": "Google",
-      "url": "https://dns.google/dns-query",
-      "ips": [
-        "8.8.4.4",
-        "8.8.8.8"
-      ]
-    },
-    {
-      "name": "Cloudflare",
-      "url": "https://cloudflare-dns.com/dns-query",
-      "ips": [
-        "1.1.1.1",
-        "1.0.0.1",
-        "2606:4700:4700::1111",
-        "2606:4700:4700::1001"
-      ]
-    },
-    {
-      "name": "AdGuard",
-      "url": "https://dns.adguard.com/dns-query",
-      "ips": [
-        "94.140.14.140",
-        "94.140.14.141"
-      ]
-    },
-    {
-      "name": "DNSWatch",
-      "url": "https://resolver2.dns.watch/dns-query",
-      "ips": [
-        "84.200.69.80",
-        "84.200.70.40"
-      ]
-    },
-    {
-      "name": "Quad9",
-      "url": "https://dns.quad9.net/dns-query",
-      "ips": [
-        "9.9.9.9",
-        "149.112.112.112"
-      ]
-    }
-  ],
-  "ads": [
-    "mozai.4gtv.tv",
-    "static-mozai.4gtv.tv"
   ],
   "lives": [],
-  "ijk": [
-    {
-      "group": "软解码",
-      "options": [
-        {
-          "category": 4,
-          "name": "opensles",
-          "value": "0"
-        },
-        {
-          "category": 4,
-          "name": "overlay-format",
-          "value": "842225234"
-        },
-        {
-          "category": 4,
-          "name": "framedrop",
-          "value": "1"
-        },
-        {
-          "category": 4,
-          "name": "soundtouch",
-          "value": "1"
-        },
-        {
-          "category": 4,
-          "name": "start-on-prepared",
-          "value": "1"
-        }
-      ]
-    }
-  ]
+  "ads": [],
+  "doh": [
+    "https://dns.alidns.com/dns-query",
+    "https://doh.pub/dns-query"
+  ],
+  "ijk": {},
+  "logo": "https://tvbox.ystv.top/logo.png",
+  "wallpaper": "https://tvbox.ystv.top/wallpaper.jpg"
 }
