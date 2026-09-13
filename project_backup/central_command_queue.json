@@ -1,0 +1,86 @@
+[
+  {
+    "command_id": "cmd_1789008483_2010_0",
+    "type": "push",
+    "file_path": "/runtime/user_skills/tvbox-dev/lusi_av.py",
+    "file_name": "lusi_av.py",
+    "file_size": 10316,
+    "url": "https://ubi.lsavw6.pics/lsavw/",
+    "site_name": "lusi_av",
+    "status": "dispatched",
+    "created_at": "2026-09-10 10:48:03",
+    "dispatched_at": "2026-09-10 10:48:03"
+  },
+  {
+    "command_id": "cmd_1789008483_2010_1",
+    "type": "push",
+    "file_path": "/runtime/user_skills/tvbox-dev/lusi_av_小程序.zip",
+    "file_name": "lusi_av_小程序.zip",
+    "file_size": 17626,
+    "url": "https://ubi.lsavw6.pics/lsavw/",
+    "site_name": "lusi_av",
+    "status": "dispatched",
+    "created_at": "2026-09-10 10:48:03",
+    "dispatched_at": "2026-09-10 10:48:03"
+  },
+  {
+    "command_id": "cmd_1789008942_2489_0",
+    "type": "push",
+    "file_path": "/runtime/user_skills/tvbox-dev/langchao_av.py",
+    "file_name": "langchao_av.py",
+    "file_size": 11299,
+    "url": "https://dzf.lcfd3.lat/lcfd/",
+    "site_name": "langchao_av",
+    "status": "dispatched",
+    "created_at": "2026-09-10 10:55:42",
+    "dispatched_at": "2026-09-10 10:55:42"
+  },
+  {
+    "command_id": "cmd_1789008942_2489_1",
+    "type": "push",
+    "file_path": "/runtime/user_skills/tvbox-dev/langchao_av_小程序.zip",
+    "file_name": "langchao_av_小程序.zip",
+    "file_size": 17732,
+    "url": "https://dzf.lcfd3.lat/lcfd/",
+    "site_name": "langchao_av",
+    "status": "dispatched",
+    "created_at": "2026-09-10 10:55:42",
+    "dispatched_at": "2026-09-10 10:55:42"
+  },
+  {
+    "command_id": "cmd_1789027732_2012_0",
+    "type": "push",
+    "file_path": "/runtime/user_skills/tvbox-dev/sbjys.py",
+    "file_name": "sbjys.py",
+    "file_size": 10935,
+    "url": "https://www.sbjys5.top/sbjys/",
+    "site_name": "搜B研究所",
+    "status": "dispatched",
+    "created_at": "2026-09-10 16:08:52",
+    "dispatched_at": "2026-09-10 16:08:52"
+  },
+  {
+    "command_id": "cmd_1789027732_2012_1",
+    "type": "push",
+    "file_path": "/runtime/user_skills/tvbox-dev/sbjys_小程序.zip",
+    "file_name": "sbjys_小程序.zip",
+    "file_size": 17762,
+    "url": "https://www.sbjys5.top/sbjys/",
+    "site_name": "搜B研究所",
+    "status": "dispatched",
+    "created_at": "2026-09-10 16:08:52",
+    "dispatched_at": "2026-09-10 16:08:52"
+  },
+  {
+    "command_id": "cmd_1789280020_16560_0",
+    "type": "push",
+    "file_path": "/home/user/Doubao/chats/38441277210750978/段德机器人项目/output/91波多.py",
+    "file_name": "91波多.py",
+    "file_size": 8038,
+    "url": "https://www.91bd3.skin/91bd/",
+    "site_name": "91波多",
+    "status": "dispatched",
+    "created_at": "2026-09-13 14:13:40",
+    "dispatched_at": "2026-09-13 14:13:40"
+  }
+]
