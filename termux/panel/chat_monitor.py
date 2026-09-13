@@ -1,6 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 # ============================================================
-# 段德机器人 - 群消息监听器 v4（读SQLite数据库，无getUpdates冲突）
+# 段德机器人 - 消息监听器 v5（群+私聊，读数据库）
 # ============================================================
 
 import json, os, sys, time, sqlite3
@@ -11,12 +11,10 @@ SCRIPTS_DIR = os.path.join(PROJECT_DIR, "scripts")
 LOG_DIR = os.path.join(PROJECT_DIR, "logs")
 DB_FILE = os.path.join(SCRIPTS_DIR, "user_points.db")
 CHAT_LOG_FILE = os.path.join(LOG_DIR, "chat_log.json")
-TARGET_CHAT_ID = "-1003795519678"  # 目标群ID
-MAX_MESSAGES = 200
-CHECK_INTERVAL = 3  # 每3秒检查一次数据库
+MAX_MESSAGES = 500
+CHECK_INTERVAL = 2  # 每2秒检查一次数据库
 
 os.makedirs(LOG_DIR, exist_ok=True)
-
 last_id = 0
 
 def load_last_id():
@@ -35,16 +33,16 @@ def save_chat_log(messages):
         json.dump(messages[-MAX_MESSAGES:], f, ensure_ascii=False, indent=2)
 
 def get_new_messages():
-    """从数据库读取新消息"""
     global last_id
     if not os.path.exists(DB_FILE):
         return []
     try:
         conn = sqlite3.connect(DB_FILE)
         conn.row_factory = sqlite3.Row
+        # 读取所有消息（群+私聊），不限制chat_id
         rows = conn.execute(
-            "SELECT id, message_id, chat_id, from_user, user_id, text, message_type, created_at FROM chat_messages WHERE id > ? AND chat_id = ? ORDER BY id ASC LIMIT 50",
-            (last_id, TARGET_CHAT_ID)
+            "SELECT id, message_id, chat_id, chat_type, from_user, user_id, text, message_type, created_at FROM chat_messages WHERE id > ? ORDER BY id ASC LIMIT 100",
+            (last_id,)
         ).fetchall()
         conn.close()
         
@@ -52,12 +50,22 @@ def get_new_messages():
         for row in rows:
             last_id = row["id"]
             content = row["text"] or ""
-            if row["message_type"] != "text":
-                content = f"[{row['message_type']}] {content}"
+            msg_type = row["message_type"] or "text"
+            chat_type = row["chat_type"] or ""
+            
+            # 标记消息来源
+            if chat_type == "private":
+                source = "📱私聊"
+            elif chat_type == "group" or chat_type == "supergroup":
+                source = "👥群聊"
+            else:
+                source = "📨"
+            
+            if msg_type != "text":
+                content = f"[{msg_type}] {content}"
             if not content:
                 continue
             
-            # 解析时间
             try:
                 t = datetime.strptime(row["created_at"], "%Y-%m-%d %H:%M:%S")
                 time_str = t.strftime("%m-%d %H:%M:%S")
@@ -67,6 +75,9 @@ def get_new_messages():
             new_msgs.append({
                 "db_id": row["id"],
                 "message_id": row["message_id"],
+                "chat_id": row["chat_id"],
+                "chat_type": chat_type,
+                "source": source,
                 "sender": row["from_user"] or "未知",
                 "sender_id": row["user_id"],
                 "content": content,
@@ -79,13 +90,11 @@ def get_new_messages():
         return []
 
 def main():
-    print("📡 群消息监听器启动（读数据库模式，无冲突）...")
+    print("📡 消息监听器启动 v5（群+私聊，读数据库）...")
     print(f"📂 数据库: {DB_FILE}")
-    print(f"🎯 目标群: {TARGET_CHAT_ID}")
     
     load_last_id()
     
-    # 先加载已有消息
     messages = []
     if os.path.exists(CHAT_LOG_FILE):
         try:
@@ -95,7 +104,7 @@ def main():
             pass
     
     print(f"📋 已加载历史消息: {len(messages)} 条，最后ID: {last_id}")
-    print("🔄 开始监听群消息（每3秒检查数据库）...")
+    print("🔄 开始监听（每2秒检查数据库，群+私聊）...")
     
     while True:
         try:
@@ -105,7 +114,7 @@ def main():
                 messages = messages[-MAX_MESSAGES:]
                 save_chat_log(messages)
                 for m in new_msgs:
-                    print(f"  [{m['time']}] {m['sender']}: {m['content'][:50]}")
+                    print(f"  [{m['time']}] {m['source']} {m['sender']}: {m['content'][:50]}")
             
             time.sleep(CHECK_INTERVAL)
             
