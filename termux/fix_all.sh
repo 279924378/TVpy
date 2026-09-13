@@ -5,7 +5,7 @@ LOG_DIR="$PROJECT_DIR/logs"
 mkdir -p "$SCRIPTS_DIR" "$LOG_DIR" "$PROJECT_DIR/tvbox_subscribe/py"
 
 echo "╔══════════════════════════════════════════════╗"
-echo "║   段德机器人 - 一键修复+启动面板             ║"
+echo "║   段德机器人 - 一键修复+启动面板 v3          ║"
 echo "╚══════════════════════════════════════════════╝"
 
 # 1. 自动检测代理
@@ -31,12 +31,12 @@ wget -q --timeout=20 "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main
 chmod +x "$SCRIPTS_DIR/repo_sync.sh"
 echo "  ✅ 同步脚本已更新"
 
-# 3. 下载TUI面板
+# 3. 下载TUI面板（60秒刷新）
 echo "[3/6] 下载机器人终端面板..."
 wget -q --timeout=20 "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/termux/tui/tui_panel.py" -O "$SCRIPTS_DIR/tui_panel.py" 2>/dev/null
 wget -q --timeout=20 "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/termux/tui/start_tui.sh" -O "$PROJECT_DIR/start_tui.sh" 2>/dev/null
 chmod +x "$PROJECT_DIR/start_tui.sh"
-echo "  ✅ 终端面板已下载"
+echo "  ✅ 终端面板已下载（60秒刷新）"
 
 # 4. 启动所有后台服务
 echo "[4/6] 启动后台服务..."
@@ -49,8 +49,8 @@ cd "$PROJECT_DIR" && nohup bash scripts/watchdog.sh >> logs/watchdog.log 2>&1 &
 cd "$SCRIPTS_DIR" && nohup bash push_tasks.sh daemon >> "$LOG_DIR/task_upload.log" 2>&1 &
 cd "$SCRIPTS_DIR" && nohup bash repo_sync.sh daemon >> "$LOG_DIR/repo_sync.log" 2>&1 &
 
-# 等待60秒让机器人完全启动
-echo "  等待机器人启动（60秒）..."
+# 等待最多60秒让机器人完全启动
+echo "  等待机器人启动（最多60秒）..."
 for i in $(seq 1 60); do
     if pgrep -f "tg_bot_service.py" >/dev/null 2>&1; then
         echo "  ✅ 机器人已启动（第${i}秒）"
@@ -58,14 +58,11 @@ for i in $(seq 1 60); do
     fi
     sleep 1
 done
-if ! pgrep -f "tg_bot_service.py" >/dev/null 2>&1; then
-    echo "  ⚠️  机器人启动较慢，面板会继续等待"
-fi
 
-# 5. 立即同步一次
-echo "[5/6] 同步最新仓库..."
-bash "$SCRIPTS_DIR/repo_sync.sh" sync 2>/dev/null
-echo "  ✅ 同步完成"
+# 5. 立即同步一次（不阻塞）
+echo "[5/6] 同步最新仓库（后台执行）..."
+nohup bash "$SCRIPTS_DIR/repo_sync.sh" sync >> "$LOG_DIR/repo_sync.log" 2>&1 &
+echo "  ✅ 同步已在后台执行"
 
 # 6. 状态总览
 echo "[6/6] 服务状态:"
