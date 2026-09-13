@@ -1,10 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/env python3
 # ============================================================
-# 段德机器人 - 群消息监听器 v2（自动代理支持）
-# 通过Telegram API获取群消息，写入chat_log.json供面板展示
+# 段德机器人 - 群消息监听器 v3（修复作用域bug）
 # ============================================================
 
-import json, os, sys, time, urllib.request, urllib.error, socket
+import json, os, sys, time, socket
+import urllib.request, urllib.error, urllib.parse
 from datetime import datetime
 
 PROJECT_DIR = os.path.expanduser("~/段德机器人项目")
@@ -17,7 +17,6 @@ MAX_MESSAGES = 200
 os.makedirs(LOG_DIR, exist_ok=True)
 
 def detect_proxy():
-    """自动检测本地代理端口"""
     for port in [7890, 10809, 8080, 1080, 7891, 1087]:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,7 +45,6 @@ def load_config():
 def tg_api(token, method, params=None):
     url = f"https://api.telegram.org/bot{token}/{method}"
     if params:
-        import urllib.parse
         url += "?" + urllib.parse.urlencode(params)
     try:
         req = urllib.request.Request(url)
@@ -83,7 +81,6 @@ def main():
         print(f"✅ 机器人: @{me['result']['username']}")
     else:
         print(f"❌ 获取机器人信息失败: {me.get('error', me)}")
-        print("   请检查代理是否开启，或网络是否能访问api.telegram.org")
         return
     
     messages = load_chat_log()
