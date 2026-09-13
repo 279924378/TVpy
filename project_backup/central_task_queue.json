@@ -1,0 +1,52 @@
+[
+  {
+    "task_id": "task_1789005387_0",
+    "url": "https://www.youtube.com",
+    "from_user": "𝓞𝓻𝓲𝓸𝓷",
+    "status": "dispatched",
+    "created_at": "2026-09-10 09:56:27",
+    "proxy_port": 10902,
+    "workspace": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789005387_0",
+    "dispatched_at": "2026-09-10 09:56:34"
+  },
+  {
+    "task_id": "task_1789006211_0",
+    "url": "https://idl.dfswh5.top/dfswh/",
+    "from_user": "瓜",
+    "status": "dispatched",
+    "created_at": "2026-09-10 10:10:11",
+    "proxy_port": 10904,
+    "workspace": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_0",
+    "dispatched_at": "2026-09-10 10:10:18"
+  },
+  {
+    "task_id": "task_1789006211_1",
+    "url": "https://xjv.jllth3.skin/jllth/",
+    "from_user": "瓜",
+    "status": "dispatched",
+    "created_at": "2026-09-10 10:10:11",
+    "proxy_port": 10905,
+    "workspace": "/runtime/user_skills/tvbox-dev/scripts/containers/task_1789006211_1",
+    "dispatched_at": "2026-09-10 10:10:21"
+  },
+  {
+    "task_id": "task_1789006897_0",
+    "url": "https://www.xnxxx.tv",
+    "from_user": "👁",
+    "status": "dispatched",
+    "created_at": "2026-09-10 10:21:37",
+    "proxy_port": 10906,
+    "workspace": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789006897_0",
+    "dispatched_at": "2026-09-10 10:21:49"
+  },
+  {
+    "task_id": "task_1789014717_0",
+    "url": "https://www.freepornvideos.xxx/zh/networks/nubiles-porn-com/",
+    "from_user": "虞",
+    "status": "dispatched",
+    "created_at": "2026-09-10 12:31:57",
+    "proxy_port": 10902,
+    "workspace": "/home/user/.doubao/agent_mode/workspace/.user_skills/tvbox-dev/scripts/containers/task_1789014717_0",
+    "dispatched_at": "2026-09-10 12:32:02"
+  }
+]
