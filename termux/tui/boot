@@ -1,0 +1,27 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Termux:Boot 开机自启脚本
+# 启动后台服务 + 自动打开终端面板
+
+# 等待网络
+sleep 10
+
+PROJECT_DIR="$HOME/段德机器人项目"
+LOG_DIR="$PROJECT_DIR/logs"
+mkdir -p "$LOG_DIR"
+
+# 启动守护进程（后台）
+cd "$PROJECT_DIR"
+nohup bash scripts/watchdog.sh >> logs/watchdog.log 2>&1 &
+
+# 启动消息监听器（后台）
+cd "$PROJECT_DIR/scripts"
+nohup python3 chat_monitor.py >> "$LOG_DIR/chat_monitor.log" 2>&1 &
+
+# 等待服务启动
+sleep 5
+
+# 自动打开终端面板（前台）
+# 注意：Termux:Boot默认不显示终端，如果需要开机自动显示面板，
+# 需要在Termux应用设置里开启"启动时执行命令"或手动打开Termux
+cd "$PROJECT_DIR/scripts"
+python3 tui_panel.py
