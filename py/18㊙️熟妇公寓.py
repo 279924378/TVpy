@@ -58,7 +58,7 @@ class Spider(Spider):
     domain = "https://mrt.sfgy9.fit"
     siteName = "熟妇公寓"
     
-    # 分类硬编码（11个）
+    # 分类硬编码（11个普通分类 + 5个底部导航特殊分类）
     CATEGORIES = [
         {"type_id": "20", "type_name": "美女写真"},
         {"type_id": "21", "type_name": "国产精品"},
@@ -71,6 +71,12 @@ class Spider(Spider):
         {"type_id": "28", "type_name": "SM捆绑"},
         {"type_id": "29", "type_name": "自淫系列"},
         {"type_id": "30", "type_name": "三级伦理"},
+        # 底部导航特殊分类
+        {"type_id": "hot", "type_name": "🏆 总排行榜"},
+        {"type_id": "hot_month", "type_name": "📅 月排行榜"},
+        {"type_id": "hot_day", "type_name": "🔥 日排行榜"},
+        {"type_id": "new", "type_name": "🆕 最新上传"},
+        {"type_id": "more_keywords", "type_name": "🏷️ 热门标签"},
     ]
     
     UA_CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
@@ -196,10 +202,26 @@ class Spider(Spider):
     # ==================== 2. categoryContent ====================
     def categoryContent(self, tid, pg, filter=False, extend=None):
         pg = int(pg) if pg else 1
-        # 分类页URL（域名根路径，vodtype格式）
-        url = f"{self.domain}/vodtype/{tid}.html"
-        if pg > 1:
-            url = f"{self.domain}/vodtype/{tid}-{pg}.html"
+        
+        # 判断是不是特殊分类（底部导航）
+        special_cats = {
+            "hot": "/label/hot.html",
+            "hot_month": "/label/hot_month.html",
+            "hot_day": "/label/hot_day.html",
+            "new": "/label/new.html",
+            "more_keywords": "/label/more_keywords.html",
+        }
+        
+        if tid in special_cats:
+            # 特殊分类URL
+            url = f"{self.domain}{special_cats[tid]}"
+            if pg > 1:
+                url = f"{self.domain}{special_cats[tid].replace('.html', f'-{pg}.html')}"
+        else:
+            # 普通分类URL（域名根路径，vodtype格式）
+            url = f"{self.domain}/vodtype/{tid}.html"
+            if pg > 1:
+                url = f"{self.domain}/vodtype/{tid}-{pg}.html"
         
         html = self._fetch(url)
         videos = self._parse_list(html)
@@ -207,7 +229,10 @@ class Spider(Spider):
         # 分页信息
         pagecount = pg
         total = len(videos)
-        pages = re.findall(r'/vodtype/\d+-(\d+)\.html', html)
+        if tid in special_cats:
+            pages = re.findall(r'/label/\w+-(\d+)\.html', html)
+        else:
+            pages = re.findall(r'/vodtype/\d+-(\d+)\.html', html)
         if pages:
             pagecount = max(int(p) for p in pages)
         
