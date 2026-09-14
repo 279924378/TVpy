@@ -120,6 +120,13 @@
       "ext": ""
     },
     {
+      "key": "日久生情",
+      "name": "日久生情",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️日久生情.py",
+      "ext": ""
+    },
+    {
       "key": "春心一动",
       "name": "春心一动",
       "type": 3,
@@ -492,6 +499,13 @@
       "name": "聚合影视",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️聚合影视.py",
+      "ext": ""
+    },
+    {
+      "key": "日久生情",
+      "name": "日久生情",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️日久生情.py",
       "ext": ""
     }
   ],
