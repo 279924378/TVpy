@@ -2,8 +2,10 @@
 """
 十八禁视频 - 四壳通用Python Spider
 站点: https://www.sbjsp5.autos/sbjsp/
-结构: 苹果CMS变种，li.item列表，视频链接直接是播放页(vod/play)，播放页player_data.url直出m3u8
-CF防护: 无（普通HTTP即可访问）
+结构: 苹果CMS变种，li.item列表，播放页player_data.url直出m3u8
+分类URL: /cn/home/web/index.php/vod/type/id/{cid}.html
+分页URL: /cn/home/web/index.php/vod/show/id/{cid}/page/{page}.html
+播放URL: /cn/home/web/index.php/vod/play/id/{vod_id}/sid/1/nid/1.html
 """
 
 import re
@@ -126,38 +128,35 @@ class Spider(Spider):
     # ==================== 解析列表（li.item结构） ====================
     def _parse_list(self, html):
         videos = []
-        items = re.findall(r"<li class='item'>(.*?)</li>", html, re.S)
+        items = re.findall(r"<li[^>]*class='item'[^>]*>(.*?)</li>", html, re.S)
+        if not items:
+            items = re.findall(r'<li[^>]*class="item"[^>]*>(.*?)</li>', html, re.S)
         
         for item in items:
             try:
-                # 链接（播放页 /cn/home/web/index.php/vod/play/id/{vod_id}/sid/1/nid/1.html）
-                link_match = re.search(r"href='[^']*vod/play/id/(\d+)/sid/\d+/nid/\d+\.html", item)
+                # 链接（vod/play/id/{id}/sid/1/nid/1.html）
+                link_match = re.search(r'href=["\']([^"\']*vod/play/id/(\d+)[^"\']*)["\']', item)
                 if not link_match:
-                    # 备用：从href提取数字
-                    link_match2 = re.search(r"href='[^']*id/(\d+)[^']*'", item)
-                    if not link_match2:
-                        continue
-                    vod_id = link_match2.group(1)
-                else:
-                    vod_id = link_match.group(1)
+                    continue
+                href = link_match.group(1).strip()
+                vod_id = link_match.group(2)
                 
                 # 标题（a title属性）
-                title_match = re.search(r"title='([^']+)'", item)
+                title_match = re.search(r'title=["\']([^"\']+)["\']', item)
                 vod_name = title_match.group(1).strip() if title_match else ""
                 if not vod_name:
-                    # 备用：从span.s1提取
-                    s1_match = re.search(r"class='s1'>(.*?)</span>", item, re.S)
+                    s1_match = re.search(r'class=["\']s1["\'][^>]*>(.*?)</', item, re.S)
                     vod_name = self._strip_tags(s1_match.group(1)) if s1_match else ""
                 
                 if is_juvenile(vod_name):
                     continue
                 
                 # 封面（img src）
-                img_match = re.search(r"<img src='([^']+)'", item)
+                img_match = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', item)
                 vod_pic = img_match.group(1) if img_match else ""
                 
                 # 备注（日期）
-                hint_match = re.search(r"class='hint'>(.*?)</span>", item, re.S)
+                hint_match = re.search(r'class=["\']hint["\'][^>]*>(.*?)</', item, re.S)
                 vod_remarks = self._strip_tags(hint_match.group(1)) if hint_match else ""
                 
                 videos.append({
@@ -185,30 +184,31 @@ class Spider(Spider):
     # ==================== 2. categoryContent ====================
     def categoryContent(self, tid, pg, filter=False, extend=None):
         pg = int(pg) if pg else 1
-        url = f"{self.domain}{self.basePath}/vod/type/id/{tid}.html"
-        if pg > 1:
-            url = f"{self.domain}{self.basePath}/vod/type/id/{tid}/{pg}.html"
+        # 第一页用type，后续页用show
+        if pg == 1:
+            url = f"{self.domain}{self.basePath}/vod/type/id/{tid}.html"
+        else:
+            url = f"{self.domain}{self.basePath}/vod/show/id/{tid}/page/{pg}.html"
         
         html = self._fetch(url)
         videos = self._parse_list(html)
         
-        # 分页信息（此站点每分类约48视频，无分页）
-        pagecount = 1
+        # 分页信息
+        pagecount = pg
         total = len(videos)
-        pages = re.findall(r'vod/type/id/\d+[/-](\d+)\.html', html)
+        pages = re.findall(r'/vod/show/id/\d+/page/(\d+)\.html', html)
         if pages:
             pagecount = max(int(p) for p in pages)
-            total = pagecount * 48
         
         return {
             "page": pg,
             "pagecount": pagecount,
-            "limit": 48,
+            "limit": 60,
             "total": total,
             "list": videos,
         }
     
-    # ==================== 3. detailContent ====================
+    # ==================== 3. detailContent（直接访问播放页获取m3u8） ====================
     def detailContent(self, ids):
         if isinstance(ids, str):
             ids = [ids]
@@ -219,24 +219,28 @@ class Spider(Spider):
         for vod_id in ids:
             try:
                 vod_id = str(vod_id).strip()
-                # 播放页（直接访问播放页获取m3u8）
+                # 播放页URL
                 play_url = f"{self.domain}{self.basePath}/vod/play/id/{vod_id}/sid/1/nid/1.html"
                 html = self._fetch(play_url)
                 if not html or len(html) < 2000:
                     continue
                 
-                # 从player_data提取url（m3u8地址）
+                # 从player_data提取m3u8
                 m3u8_url = ""
-                player_match = re.search(r'player_data\s*=\s*({.*?});', html, re.S)
-                if player_match:
-                    pd_str = player_match.group(1)
-                    url_match = re.search(r'"url"\s*:\s*"([^"]+)"', pd_str)
-                    if url_match:
-                        m3u8_url = url_match.group(1).replace("\\/", "/")
+                pd_match = re.search(r'var\s+player_data\s*=\s*(\{.*?\})', html, re.S)
+                if pd_match:
+                    try:
+                        pd = json.loads(pd_match.group(1))
+                        m3u8_url = pd.get("url", "")
+                    except Exception:
+                        # 手动提取url
+                        url_match = re.search(r'"url"\s*:\s*"([^"]+)"', pd_match.group(1))
+                        if url_match:
+                            m3u8_url = url_match.group(1).replace("\\/", "/")
                 
                 if not m3u8_url:
                     # 备用：直接找m3u8
-                    m3u8_matches = re.findall(r'https?://[^\s"\'\\]+\.m3u8', html)
+                    m3u8_matches = re.findall(r'https?://[^\s"\'\\]+\.m3u8[^\s"\'\\]*', html)
                     if m3u8_matches:
                         m3u8_url = m3u8_matches[0]
                 
@@ -246,21 +250,18 @@ class Spider(Spider):
                 if is_juvenile(m3u8_url):
                     continue
                 
-                # 标题（title标签）
-                vod_name = ""
+                # 标题（从title标签或a title）
+                vod_name = f"视频{vod_id}"
                 title_match = re.search(r'<title>(.*?)</title>', html, re.S)
                 if title_match:
                     vod_name = self._strip_tags(title_match.group(1))
                     vod_name = re.sub(r'[-_–—]\s*十八禁视频.*$', '', vod_name).strip()
                 
-                if not vod_name:
-                    vod_name = f"视频{vod_id}"
-                
                 if is_juvenile(vod_name):
                     continue
                 
-                # 封面（从播放页找img）
-                pic_match = re.search(r"<img src='([^']+)'", html)
+                # 封面
+                pic_match = re.search(r'<img[^>]+src=["\']([^"\']+\.(?:jpg|jpeg|png))["\']', html)
                 vod_pic = pic_match.group(1) if pic_match else ""
                 
                 # 播放线路
@@ -293,7 +294,7 @@ class Spider(Spider):
         return {
             "page": pg,
             "pagecount": 0,
-            "limit": 48,
+            "limit": 60,
             "total": 0,
             "list": [],
         }
@@ -304,7 +305,6 @@ class Spider(Spider):
             return {"parse": 0, "jx": 0, "url": "", "header": {}}
         
         url = id
-        # m3u8在第三方域名，只需UA
         header = {
             "User-Agent": self.UA_IOS,
         }
