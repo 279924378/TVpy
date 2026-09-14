@@ -44,14 +44,12 @@ except Exception:
         def destroy(self):
             pass
 
-# ==================== 未成年关键词过滤（铁律13） ====================
-JUVENILE_KEYWORDS = ['萝莉', '幼女', '童', '未成年', 'teen', 'loli', 'schoolgirl', '孩童', '稚子', '玉蕊', '豆蔻', '小学生', '初中生']
+# ==================== 未成年关键词过滤（铁律13已移除） ====================
+# 已按用户要求移除未成年脱敏过滤，不再过滤任何关键词
 
 def is_juvenile(text):
-    if not text:
-        return False
-    text_lower = text.lower()
-    return any(kw.lower() in text_lower for kw in JUVENILE_KEYWORDS)
+    # 已移除，永远返回False
+    return False
 
 # ==================== 主Spider类 ====================
 class Spider(Spider):
@@ -132,49 +130,41 @@ class Spider(Spider):
         videos = []
         seen_ids = set()
         
-        # 找所有播放链接
-        id_matches = re.findall(r'vod/play/id/(\d+)', html)
+        # 找所有li标签（每个li是一个视频项）
+        items = re.findall(r'<li>(.*?)</li>', html, re.S)
         
-        for vod_id in id_matches:
-            if vod_id in seen_ids:
-                continue
-            seen_ids.add(vod_id)
-            
+        for item_html in items:
             try:
-                # 找这个视频的标题（从id附近的HTML找）
-                # 找包含这个id的a标签
-                pattern = rf'href="[^"]*vod/play/id/{vod_id}[^"]*"[^>]*>(.*?)</a>'
-                item_match = re.search(pattern, html, re.S)
-                if not item_match:
+                # 找vod_id
+                id_match = re.search(r'vod/play/id/(\d+)', item_html)
+                if not id_match:
                     continue
+                vod_id = id_match.group(1)
                 
-                item_content = item_match.group(1)
+                if vod_id in seen_ids:
+                    continue
+                seen_ids.add(vod_id)
                 
-                # 标题
+                # 标题：从h3标签里找
                 vod_name = ""
-                title_match = re.search(r'<h[45][^>]*>(.*?)</h[45]>', item_content, re.S)
-                if title_match:
-                    vod_name = self._strip_tags(title_match.group(1))
+                h3_match = re.search(r'<h3>.*?<a[^>]*>(.*?)</a>.*?</h3>', item_html, re.S)
+                if h3_match:
+                    vod_name = self._strip_tags(h3_match.group(1)).strip()
                 
-                if not vod_name or len(vod_name) < 5:
-                    # 从a标签的title属性
-                    title_attr = re.search(r'title="([^"]+)"', item_match.group(0))
-                    if title_attr:
-                        vod_name = title_attr.group(1)
+                if not vod_name:
+                    # 从img的alt/title属性
+                    alt_match = re.search(r'<img[^>]*alt="([^"]+)"', item_html)
+                    if alt_match:
+                        vod_name = alt_match.group(1).strip()
                 
-                if not vod_name or len(vod_name) < 5:
-                    continue
-                # 过滤掉包含日期格式的（如"09-14"）
-                if re.match(r'^\d{2}-\d{2}$', vod_name.strip()):
-                    continue
-                if is_juvenile(vod_name):
+                if not vod_name or len(vod_name) < 3:
                     continue
                 
-                # 封面
+                # 封面：从data-original提取（懒加载）
                 vod_pic = ""
-                pic_match = re.search(r'<img[^>]*src="([^"]+\.(?:jpg|jpeg|png))"', item_content)
+                pic_match = re.search(r'<img[^>]*data-original="([^"]+\.(?:jpg|jpeg|png))"', item_html)
                 if not pic_match:
-                    pic_match = re.search(r'<img[^>]*data-original="([^"]+\.(?:jpg|jpeg|png))"', item_content)
+                    pic_match = re.search(r'<img[^>]*src="([^"]+\.(?:jpg|jpeg|png))"', item_html)
                 if pic_match:
                     vod_pic = pic_match.group(1)
                     # 相对路径转绝对路径
