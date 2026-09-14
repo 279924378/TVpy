@@ -122,11 +122,12 @@ class Spider(Spider):
             return ""
         return re.sub(r"<[^>]+>", "", html).strip()
     
-    # ==================== 解析列表（item > zoom-container结构） ====================
+    # ==================== 解析列表（item + wrap-vid两种结构，去重） ====================
     def _parse_list(self, html):
         videos = []
-        # 匹配 <div class="item"> 里的内容
-        items = re.findall(r'<div[^>]*class="[^"]*item[^"]*"[^>]*>(.*?)(?=<div[^>]*class="[^"]*item|$)', html, re.S)
+        seen_ids = set()
+        # 匹配两种结构：<div class="item">（新片推荐）和 <div class="wrap-vid">（视频列表）
+        items = re.findall(r'<div[^>]*class="[^"]*(?:item|wrap-vid)[^"]*"[^>]*>(.*?)(?=<div[^>]*class="[^"]*(?:item|wrap-vid)|$)', html, re.S)
         
         for item in items:
             try:
@@ -135,6 +136,11 @@ class Spider(Spider):
                 if not id_match:
                     continue
                 vod_id = id_match.group(1)
+                
+                # 去重：同一个视频可能出现在新片推荐和视频列表两个区域
+                if vod_id in seen_ids:
+                    continue
+                seen_ids.add(vod_id)
                 
                 # 标题（zoom-caption > p）
                 vod_name = ""
