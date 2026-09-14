@@ -1,0 +1,38 @@
+name: Spider健康检测
+
+# 触发条件：
+# 1. 每天UTC 0点（北京时间8点）自动检测
+# 2. 手动点击运行（workflow_dispatch）
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天UTC 0点 = 北京时间8点
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      
+      - name: 安装Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 运行健康检测
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python3 scripts/check_spider_health.py
+        continue-on-error: true  # 即使有失效源也不标记workflow失败
+      
+      - name: 上传检测日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-check-log
+          path: /tmp/health_check.log
+          retention-days: 7
