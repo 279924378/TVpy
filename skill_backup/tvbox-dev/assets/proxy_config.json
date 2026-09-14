@@ -1,0 +1,25 @@
+{
+  "default_proxy": "https://xsz-shared-proxy.97471201.workers.dev",
+  "proxy_mode": "domain_replace",
+  "description": "默认反代Worker（域名替换式透明代理），遇到Cloudflare/WAF防护的影视站自动启用。rawSite→siteUrl，路径保持不变。",
+  "created": "2026-09-06",
+  "owner": "97471201@qq.com",
+  "usage": {
+    "python_spider": {
+      "default": "self.siteUrl = default_proxy; self.rawSite = 原始站点; self.HOST = self.siteUrl",
+      "ext_override": "ext.proxy / ext.siteUrl 可覆盖默认反代；ext.direct=true 则直连原始站点",
+      "player_header": "playerContent.header 必须含 User-Agent + Referer(rawSite+/) + Origin(rawSite) 破防盗链"
+    },
+    "miniapp": {
+      "default": "var HOST = default_proxy; var rawSite = 原始站点",
+      "hls_xhrSetup": "Hls xhrSetup 必须 setRequestHeader('Referer', rawSite+'/') + setRequestHeader('Origin', rawSite)",
+      "manifest": "禁止写 network.allowlist（写了反而触发 HOST_NOT_ALLOWED；不写=ant.request不限制）"
+    }
+  },
+  "multi_quality": {
+    "master": "{siteUrl}/media/videos/v_{hash}.m3u8",
+    "1080p": "https://v1.xsz2-cdn.com/v4/{hash}_1080p/v.m3u8",
+    "720p": "https://v1.xsz2-cdn.com/v4/{hash}_720p/v.m3u8",
+    "note": "XSZAV2类站点支持多画质直链，其他站点按需探测"
+  }
+}
