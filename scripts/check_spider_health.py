@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import re
+import base64
 import importlib.util
 import urllib.request
 import urllib.error
@@ -310,6 +311,92 @@ def main():
     if dead or partial:
         print("\n[3] 推送检测结果到TG群...")
         send_telegram(report)
+        
+        # 自动修复：把失效源从主spider数组移到disabled数组（不移除，只标记）
+        print("\n[4] 自动标记：把失效源移到disabled数组（不移除）...")
+        try:
+            # 读取最新的tvbox.json
+            req = urllib.request.Request(TVBOX_JSON_URL, headers={"User-Agent": UA_CHROME})
+            resp = urllib.request.urlopen(req, timeout=30, context=SSL_CTX)
+            tvbox = json.loads(resp.read().decode("utf-8"))
+            old_count = len(tvbox.get("spider", []))
+            
+            # 收集要标记的源key（完全失效+部分失效）
+            dead_names = set(d["name"] for d in dead)
+            partial_names = set(p["name"] for p in partial)
+            disable_names = dead_names | partial_names
+            
+            # 从主spider数组里分离
+            main_spider = []
+            disabled_spider = tvbox.get("disabled_spider", [])
+            disabled_names_already = set(s.get("name") for s in disabled_spider)
+            
+            for s in tvbox.get("spider", []):
+                if s.get("name") in disable_names:
+                    # 移到disabled数组（如果还没在里面）
+                    if s.get("name") not in disabled_names_already:
+                        s["disabled_reason"] = next((e["errors"][0] for e in dead + partial if e["name"] == s.get("name")), "检测失效")
+                        s["disabled_time"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+                        disabled_spider.append(s)
+                else:
+                    main_spider.append(s)
+            
+            new_count = len(main_spider)
+            disabled_count = len(disabled_spider)
+            
+            if new_count != old_count:
+                tvbox["spider"] = main_spider
+                tvbox["disabled_spider"] = disabled_spider
+                
+                # 提交回GitHub仓库
+                GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+                REPO = "jwarrenrzflynn/TVpy"
+                
+                if GITHUB_TOKEN:
+                    # 获取tvbox.json的sha
+                    encoded_path = urllib.parse.quote("tvbox.json")
+                    url = f"https://api.github.com/repos/{REPO}/contents/{encoded_path}?ref=main"
+                    req = urllib.request.Request(url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
+                    resp = urllib.request.urlopen(req, timeout=15)
+                    sha = json.loads(resp.read().decode()).get("sha", "")
+                    
+                    # 提交修改
+                    new_content = base64.b64encode(json.dumps(tvbox, ensure_ascii=False, indent=2).encode()).decode()
+                    payload = {
+                        "message": f"自动标记: {old_count - new_count}个失效源已移到disabled数组（共{disabled_count}个）",
+                        "content": new_content,
+                        "branch": "main",
+                        "sha": sha
+                    }
+                    req = urllib.request.Request(
+                        f"https://api.github.com/repos/{REPO}/contents/{encoded_path}",
+                        data=json.dumps(payload).encode("utf-8"),
+                        headers={"Authorization": f"token {GITHUB_TOKEN}", "Content-Type": "application/json"},
+                        method="PUT"
+                    )
+                    urllib.request.urlopen(req, timeout=30)
+                    print(f"  ✅ 自动标记成功: {old_count - new_count}个失效源已移到disabled数组")
+                    print(f"     主源数: {old_count} → {new_count} | disabled总数: {disabled_count}")
+                    
+                    # 推送标记通知
+                    mark_report = f"""🔧 <b>自动标记完成</b>
+
+已将 {old_count - new_count} 个失效源移到disabled数组:
+"""
+                    for name in list(disable_names)[:10]:
+                        mark_report += f"  • {name}\n"
+                    mark_report += f"\n主源数: {old_count} → {new_count}"
+                    mark_report += f"\ndisabled数组总数: {disabled_count}"
+                    mark_report += f"\n\n📡 订阅已自动更新，TVBox不会再加载失效源（源还在配置里，修复后可恢复）"
+                    send_telegram(mark_report)
+                else:
+                    print("  ⚠️  未配置GITHUB_TOKEN，跳过自动提交")
+            else:
+                print("  ✅ 没有需要标记的源")
+        except Exception as e:
+            print(f"  ❌ 自动标记失败: {e}")
+            import traceback
+            traceback.print_exc()
     else:
         print("\n[3] 没有真失效的源，不推送TG群")
     
