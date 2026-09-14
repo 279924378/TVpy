@@ -154,8 +154,8 @@ class Spider(Spider):
                 if is_juvenile(vod_name):
                     continue
                 
-                # 封面
-                img_match = re.search(r'<img[^>]+(?:data-original|src)="([^"]+)"', item)
+                # 封面（匹配任意标签的data-original或src，含懒加载a标签）
+                img_match = re.search(r'(?:data-original|src)="(https?://[^"]+)"', item)
                 vod_pic = img_match.group(1) if img_match else ""
                 
                 # 备注
@@ -311,10 +311,9 @@ class Spider(Spider):
             return {"parse": 0, "jx": 0, "url": "", "header": {}}
         
         url = id
+        # m3u8在第三方域名(iuewgnbvk.com)，只需UA，无需源站Referer/Origin
         header = {
             "User-Agent": self.UA_IOS,
-            "Referer": self.baseUrl + "/",
-            "Origin": self.baseUrl,
         }
         return {
             "parse": 0,
