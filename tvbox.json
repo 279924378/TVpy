@@ -29,6 +29,13 @@
       "ext": ""
     },
     {
+      "key": "万性视频",
+      "name": "万性视频",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️万性视频.py",
+      "ext": ""
+    },
+    {
       "key": "中神通",
       "name": "中神通",
       "type": 3,
