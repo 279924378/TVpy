@@ -22,13 +22,6 @@
       "ext": ""
     },
     {
-      "key": "JavDB",
-      "name": "JavDB",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️JavDB.py",
-      "ext": ""
-    },
-    {
       "key": "UU直播破解",
       "name": "UU直播破解",
       "type": 3,
@@ -176,13 +169,6 @@
       "ext": ""
     },
     {
-      "key": "百年直播",
-      "name": "百年直播",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️百年直播.py",
-      "ext": ""
-    },
-    {
       "key": "皇朝会所",
       "name": "皇朝会所",
       "type": 3,
@@ -194,13 +180,6 @@
       "name": "秋霞影院",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️秋霞影院.py",
-      "ext": ""
-    },
-    {
-      "key": "聚合影视",
-      "name": "聚合影视",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️聚合影视.py",
       "ext": ""
     },
     {
@@ -662,6 +641,35 @@
       "exclude": [
         ".m3u8"
       ]
+    }
+  ],
+  "disabled_spider": [
+    {
+      "key": "JavDB",
+      "name": "JavDB",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️JavDB.py",
+      "ext": "",
+      "disabled_reason": "detailContent无播放地址",
+      "disabled_time": "2026-09-14 14:35"
+    },
+    {
+      "key": "百年直播",
+      "name": "百年直播",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️百年直播.py",
+      "ext": "",
+      "disabled_reason": "homeContent异常: Spider.homeContent() missing 1 required positional argument: 'filter'",
+      "disabled_time": "2026-09-14 14:35"
+    },
+    {
+      "key": "聚合影视",
+      "name": "聚合影视",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️聚合影视.py",
+      "ext": "",
+      "disabled_reason": "homeContent分类数太少: 0",
+      "disabled_time": "2026-09-14 14:35"
     }
   ]
 }
