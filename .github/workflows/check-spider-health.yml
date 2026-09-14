@@ -21,6 +21,10 @@ jobs:
         with:
           python-version: '3.11'
       
+      - name: 安装依赖
+        run: |
+          pip install requests
+      
       - name: 运行健康检测
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
