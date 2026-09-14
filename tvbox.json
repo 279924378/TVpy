@@ -141,6 +141,13 @@
       "ext": ""
     },
     {
+      "key": "深液传媒",
+      "name": "深液传媒",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️深液传媒.py",
+      "ext": ""
+    },
+    {
       "key": "潘金连",
       "name": "潘金连",
       "type": 3,
