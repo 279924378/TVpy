@@ -185,12 +185,36 @@ class Spider(Spider):
     def homeContent(self, filter=False):
         classes = []
         filters = {}
+        # 热门标签列表（20个热门标签选项）
+        hot_tags = [
+            {"n": "全部", "v": ""},
+            {"n": "妻子", "v": "妻子"},
+            {"n": "按摩", "v": "按摩小子"},
+            {"n": "特写", "v": "特写"},
+            {"n": "教母", "v": "教母"},
+            {"n": "杨晨晨", "v": "杨晨晨"},
+            {"n": "小马拉大车", "v": "小马拉大车"},
+            {"n": "吉泽明步", "v": "吉泽明步"},
+            {"n": "春药", "v": "春药"},
+            {"n": "敏感", "v": "敏感"},
+            {"n": "出轨", "v": "出轨"},
+            {"n": "时间停止", "v": "时间停止"},
+            {"n": "三级片", "v": "三级片"},
+            {"n": "足浴", "v": "足浴"},
+            {"n": "白峰美羽", "v": "白峰美羽"},
+            {"n": "四级", "v": "四级"},
+            {"n": "波多野结衣", "v": "波多野结衣"},
+            {"n": "小远", "v": "小远"},
+            {"n": "偷窥", "v": "偷窥"},
+            {"n": "人妻", "v": "人妻"},
+        ]
+        
         for cat in self.CATEGORIES:
             classes.append({
                 "type_id": cat["type_id"],
                 "type_name": cat["type_name"],
             })
-            # 每个分类都加排序筛选（二级分类）
+            # 每个分类都加两个筛选：排序 + 热门标签
             filters[cat["type_id"]] = [
                 {
                     "name": "排序",
@@ -202,6 +226,11 @@ class Spider(Spider):
                         {"n": "🔥 日排行榜", "v": "hot_day"},
                         {"n": "🆕 最新上传", "v": "new"},
                     ]
+                },
+                {
+                    "name": "热门标签",
+                    "key": "tag",
+                    "value": hot_tags
                 }
             ]
         return {"class": classes, "filters": filters}
@@ -213,6 +242,25 @@ class Spider(Spider):
         
         # 获取排序参数（二级筛选）
         sort = extend.get("sort", "default")
+        # 获取标签参数（二级筛选）
+        tag = extend.get("tag", "")
+        
+        # 如果选了标签，用搜索接口搜索标签视频
+        if tag:
+            # 对标签进行URL编码（中文需要编码）
+            tag_encoded = urllib.parse.quote(tag)
+            url = f"{self.domain}/s/{tag_encoded}.html"
+            if pg > 1:
+                url = f"{self.domain}/s/{tag_encoded}-{pg}.html"
+            html = self._fetch(url)
+            videos = self._parse_list(html)
+            return {
+                "page": pg,
+                "pagecount": pg,
+                "limit": 24,
+                "total": len(videos),
+                "list": videos,
+            }
         
         # 根据sort参数选择URL
         sort_urls = {
@@ -253,6 +301,31 @@ class Spider(Spider):
             "total": total,
             "list": videos,
         }
+    
+    # ==================== 解析标签列表（伪装成视频卡片） ====================
+    def _parse_tags(self, html):
+        videos = []
+        # 找所有 /s/{关键词}.html 链接
+        tag_links = re.findall(r'href="/s/([^"]+)\.html"[^>]*>(.*?)</a>', html, re.S)
+        seen = set()
+        for tag_name, display_name in tag_links:
+            display_name = self._strip_tags(display_name).strip()
+            if not display_name or display_name in seen:
+                continue
+            # 排除未成年相关标签
+            if is_juvenile(display_name):
+                continue
+            seen.add(display_name)
+            # 伪装成视频项：vod_id=标签名，vod_name=标签名
+            videos.append({
+                "vod_id": f"tag_{display_name}",  # 用tag_前缀标记是标签
+                "vod_name": f"🏷️ {display_name}",
+                "vod_pic": "",
+                "vod_remarks": "标签",
+            })
+            if len(videos) >= 100:  # 最多显示100个标签
+                break
+        return videos
     
     # ==================== 3. detailContent（直接访问详情页获取m3u8） ====================
     def detailContent(self, ids):
