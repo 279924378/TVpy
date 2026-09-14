@@ -92,6 +92,13 @@
       "ext": ""
     },
     {
+      "key": "妙笔影院",
+      "name": "妙笔影院",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️妙笔影院.py",
+      "ext": ""
+    },
+    {
       "key": "完美人妻",
       "name": "完美人妻",
       "type": 3,
@@ -520,6 +527,13 @@
       "name": "炮兵网",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️炮兵网.py",
+      "ext": ""
+    },
+    {
+      "key": "妙笔影院",
+      "name": "妙笔影院",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️妙笔影院.py",
       "ext": ""
     }
   ],
