@@ -349,7 +349,7 @@ def main():
                 tvbox["disabled_spider"] = disabled_spider
                 
                 # 提交回GitHub仓库
-                GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+                GITHUB_TOKEN = os.environ.get("REPO_TOKEN", "")
                 REPO = "jwarrenrzflynn/TVpy"
                 
                 if GITHUB_TOKEN:
