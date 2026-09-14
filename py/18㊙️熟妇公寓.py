@@ -96,7 +96,7 @@ class Spider(Spider):
     def destroy(self):
         pass
     
-    # ==================== HTTP请求（走代理） ====================
+    # ==================== HTTP请求（TVBox壳内自动走全局代理） ====================
     def _fetch(self, url, timeout=20):
         headers = {
             "User-Agent": self.UA_CHROME,
@@ -105,15 +105,11 @@ class Spider(Spider):
             "Connection": "keep-alive",
             "Referer": self.domain + "/",
         }
-        # 走代理访问
-        proxy_handler = urllib.request.ProxyHandler({
-            "http": "http://127.0.0.1:10809",
-            "https": "http://127.0.0.1:10809"
-        })
-        opener = urllib.request.build_opener(proxy_handler)
+        # TVBox壳内运行时，urllib.request会自动走TVBox的全局代理
+        # 本地调试时，通过环境变量HTTP_PROXY/HTTPS_PROXY配置代理
         req = urllib.request.Request(url, headers=headers)
         try:
-            resp = opener.open(req, timeout=timeout)
+            resp = urllib.request.urlopen(req, timeout=timeout)
             content = resp.read()
             return content.decode("utf-8", errors="replace")
         except urllib.error.HTTPError as e:
