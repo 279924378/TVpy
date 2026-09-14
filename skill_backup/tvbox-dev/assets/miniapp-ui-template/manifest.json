@@ -1,0 +1,20 @@
+{
+  "appId": "com.avzxmf.hongguo",
+  "name": "AV在线免费",
+  "version": "1.0.2",
+  "versionCode": 3,
+  "renderer": "webview",
+  "entry": "index.html",
+  "description": "AV在线免费 - 高清成人视频在线播放",
+  "permissions": [
+    "storage",
+    "network"
+  ],
+  "network": {
+    "allowlist": [
+      "*.avzxmf127.sbs",
+      "*.avzxmf04.cc",
+      "mfav.avzxmf04.cc"
+    ]
+  }
+}
