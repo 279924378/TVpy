@@ -278,6 +278,324 @@ def getDependence(self): return ""
 
 > 四壳协议完整规范、13接口签名、常见坑排查见 `references/spider-dev-guide.md`（三套爬虫体系开发指南）
 
+## 三语言Spider开发规范（Java / Python / JavaScript，融合FongMi官方标准）
+
+> 来源：FongMi官方文档 https://fongmi.github.io/TV/spider/ 。三种语言目前涵盖 JAR、QuickJS、Chaquopy 与 Node.js 四种执行环境。返回型别依语言区分：Java与QuickJS返回JSON字符串；Python直接返回dict，由Chaquopy bridge序列化，**不要再呼叫json.dumps**；直播方法返回原始文字。
+
+### 三语言总览对比
+
+| 维度 | Java (JAR) | Python (Chaquopy) | JavaScript (QuickJS) |
+|------|------------|-------------------|----------------------|
+| **api配置** | `csp_Demo`，类在`com.github.catvod.spider.Demo` | `./demo.py`，相对路径以配置档所在位置为基准 | `./demo.js`，ES module默认导出 |
+| **返回类型** | JSON字符串 | dict（自动序列化） | JSON字符串 |
+| **方法名** | homeContent/categoryContent/detailContent/playerContent | 同Java | home/category/detail/play（简化！） |
+| **继承** | 继承抽象`Spider` | 继承`base.spider.Spider` | 无继承，export default对象 |
+| **异常处理** | 方法throws Exception | try/except | try/catch |
+| **性能** | 最高（ART原生） | 中（Chaquopy桥接） | 中（QuickJS引擎） |
+| **开发速度** | 慢（强类型） | 最快（dict字面量） | 快（箭头函数+展开运算符） |
+
+### ☕ Java版完整示例（JAR包，继承抽象Spider）
+
+```java
+package com.github.catvod.spider;
+import android.content.Context;
+import com.github.catvod.crawler.Spider;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.List;
+
+public class Demo extends Spider {
+    private String ext;
+    
+    @Override
+    public void init(Context context, String extend) {
+        this.ext = extend;
+    }
+    
+    @Override
+    public String homeContent(boolean filter) throws Exception {
+        JSONArray classes = new JSONArray()
+            .put(new JSONObject().put("type_id", "movie")
+            .put("type_name", "電影"));
+        return new JSONObject().put("class", classes).toString();
+    }
+    
+    @Override
+    public String categoryContent(String tid, String pg, boolean filter,
+            HashMap<String, String> extend) throws Exception {
+        JSONArray list = new JSONArray().put(card("demo-1", "範例項目"));
+        return new JSONObject().put("list", list)
+            .put("pagecount", 1).toString();
+    }
+    
+    @Override
+    public String detailContent(List<String> ids) throws Exception {
+        JSONObject item = card(ids.get(0), "範例項目")
+            .put("vod_play_from", "Demo")
+            .put("vod_play_url", "第 1 集$demo://episode/1");
+        return new JSONObject().put("list",
+            new JSONArray().put(item)).toString();
+    }
+    
+    @Override
+    public String playerContent(String flag, String id,
+            List<String> vipFlags) throws Exception {
+        return new JSONObject().put("parse", 0)
+            .put("url", resolve(id)).toString();
+    }
+    
+    private JSONObject card(String id, String name) throws Exception {
+        return new JSONObject().put("vod_id", id).put("vod_name", name)
+            .put("vod_pic", "https://example.com/poster.jpg");
+    }
+    
+    private String resolve(String id) {
+        return id.replace("demo://", "https://example.com/");
+    }
+}
+```
+
+**Java精妙之处**：强类型安全（`HashMap<String,String> extend`、`List<String> ids`）、异常向上抛App统一捕获、私有辅助方法`card()`/`resolve()`封装复用。
+
+### 🐍 Python版完整示例（Chaquopy桥接，直接返回dict）
+
+```python
+# demo.py
+from base.spider import Spider as BaseSpider
+
+class Spider(BaseSpider):
+    def init(self, extend=""):
+        self.extend = extend
+    
+    def homeContent(self, filter):
+        return {"class": [
+            {"type_id": "movie", "type_name": "電影"}
+        ]}
+    
+    def categoryContent(self, tid, pg, filter, extend):
+        return {
+            "list": [self.card("demo-1", "範例項目")],
+            "pagecount": 1
+        }
+    
+    def detailContent(self, ids):
+        item = self.card(ids[0], "範例項目")
+        item.update({
+            "vod_play_from": "Demo",
+            "vod_play_url": "第 1 集$demo://episode/1"
+        })
+        return {"list": [item]}
+    
+    def playerContent(self, flag, id, vipFlags):
+        return {"parse": 0, "url": self.resolve(id)}
+    
+    def card(self, id, name):
+        return {"vod_id": id, "vod_name": name,
+                "vod_pic": "https://example.com/poster.jpg"}
+    
+    def resolve(self, id):
+        return id.replace("demo://", "https://example.com/")
+```
+
+**Python精妙之处**：直接返回dict（不调用json.dumps，Chaquopy自动序列化）、dict字面量语法最简洁、`item.update()`合并详情信息、标准库即可（urllib+re）。**本技能开发的所有Spider均为Python版。**
+
+### ⚡ JavaScript/QuickJS版完整示例（ES module默认导出）
+
+```javascript
+// demo.js — QuickJS ES module
+const card = (id, name) => ({
+    vod_id: id,
+    vod_name: name,
+    vod_pic: "https://example.com/poster.jpg"
+});
+
+const resolve = (id) => id.replace("demo://", "https://example.com/");
+
+export default {
+    init(ext) { this.ext = ext; },
+    
+    home(filter) {
+        return JSON.stringify({ class: [
+            { type_id: "movie", type_name: "電影" }
+        ]});
+    },
+    
+    category(tid, pg, filter, extend) {
+        return JSON.stringify({
+            list: [card("demo-1", "範例項目")],
+            pagecount: 1
+        });
+    },
+    
+    detail(id) {
+        return JSON.stringify({ list: [{
+            ...card(id, "範例項目"),
+            vod_play_from: "Demo",
+            vod_play_url: "第 1 集$demo://episode/1"
+        }]});
+    },
+    
+    play(flag, id, vipFlags) {
+        return JSON.stringify({ parse: 0, url: resolve(id) });
+    }
+};
+```
+
+**JS精妙之处**：方法名简化（home/category/detail/play）、展开运算符`...card()`合并详情、箭头函数一行定义辅助方法、ES module默认导出对象。
+
+### 🚀 Node.js独立模式（第四种执行环境，HTTP JSON协议）
+
+Node.js不是QuickJS的对象模式，而是独立HTTP服务！配置入口用`index.js.md5`，同目录提供`index.js`、`index.config.js`、`index.config.js.md5`。App启动bundle后，读取`/config`回应的`video.data.video.sites`映射为`node:`站点路由。爬虫以HTTP JSON处理接在各站点路由后的`/init`、`/home`、`/category`、`/detail`、`/search`、`/play`。
+
+**⚠️ 警告**：不要只替换api前缀！单独把普通配置的api改成`node:`不会完成Node bundle初始化。
+
+### 方法生命周期（11个方法的调用时机）
+
+| 方法 (Java/Python) | 方法 (QuickJS) | 何时调用 | 主要返回 |
+|---------------------|----------------|---------|---------|
+| `init` | `init` | 建立实例时；Node重启可再次呼叫 | 读取ext、建立连线或快取 |
+| `homeContent` | `home` | 进入首页 | 分类与选填filters → `Result.class` |
+| `homeVideoContent` | `homeVod` | 首页分类完成 | 首页推荐卡片 → `Result.list` |
+| `categoryContent` | `category` | 分类、换页、变更筛选 | 该页卡片与总页数 → `list + pagecount` |
+| `detailContent` | `detail` | 点击卡片 | 完整资讯与播放分组 → `list[0]` |
+| `searchContent` | `search` | 搜寻结果，可支援页码 | `list + pagecount` |
+| `playerContent` | `play` | 选择集数 | 最终URL与播放参数 → `Result.url` |
+| `liveContent` | `live` | 载入直播配置 | TXT、M3U或Group JSON → 原始文字 |
+| `localProxy` | `proxy` | 本地代理收到请求 | 状态、类型、内容与标头 → 阵列/HTTP回应 |
+| `action` | `action` | 自订操作 | 可由Result解析的结果 |
+| `destroy` | `destroy` | 重新载入或清除 | 释放执行绪、连线、引擎资源 |
+
+### 完整Result字段说明
+
+#### 探索类（home/category/search/detail）
+
+```python
+{
+    "class": [{"type_id": "movie", "type_name": "電影"}],
+    "filters": {
+        "movie": [{
+            "key": "area", "name": "地區", "init": "",
+            "value": [{"n": "全部", "v": ""}, {"n": "台灣", "v": "tw"}]
+        }]
+    },
+    "list": [{
+        "vod_id": "demo-1", "vod_name": "範例項目",
+        "vod_pic": "https://example.com/poster.jpg",
+        "vod_remarks": "示意"
+    }],
+    "pagecount": 1,
+    "msg": "选填提示",
+    "code": 0  # 非0时隐藏msg
+}
+```
+
+**filters第一層键必须等于分类的type_id值**。
+
+#### 播放类（playerContent）—— 最完整的字段
+
+```python
+{
+    "url": "https://example.com/video/demo-1.m3u8",  # 核心字段，三种写法见下
+    "parse": 0,    # 1要求解析；0仍可能因jx=1或配置旗标比对进入解析
+    "jx": 0,       # 1要求进入解析，即使parse=0
+    "header": {    # 播放请求标头；整份为空时回退Site.header，不逐键合并
+        "User-Agent": "ExampleClient/1.0",
+        "Referer": "https://example.com/"
+    },
+    "format": "application/x-mpegURL",  # 媒体MIME type提示
+    "subs": [{   # 外挂字幕清单
+        "url": "https://example.com/subs/demo-1.vtt",
+        "name": "繁體中文", "lang": "zh-TW",
+        "format": "text/vtt",
+        "flag": 1  # 0=App自动选择；1=默认；2=强制；4=自动选择，可位元组合
+    }],
+    "danmaku": [{  # 弹幕清单
+        "url": "https://example.com/danmaku/demo-1.xml",
+        "name": "示意弹幕"
+    }],
+    "artwork": "https://example.com/poster.jpg",  # 更新播放页显示的图片
+    "desc": "示意播放资讯",  # 清理后更新播放页描述
+    "position": 120000,  # 播放起点，单位毫秒；120000=2分钟
+    "playUrl": "",  # 解析前缀；json:后接JSON解析端点，parse:后接具名解析器
+    "jxFrom": "",  # 扩展JSON解析结果回报的解析器名称
+    "flag": "",  # 播放分组与解析比对旗标；未填时App补入呼叫时的flag
+    "click": "",  # WebView载入后执行的JavaScript；Site.click非空时优先
+    "drm": {}  # 播放DRM设定
+}
+```
+
+#### 播放url的三种写法（多画质切换）
+
+**写法1：单一URL**
+```python
+{"url": "https://example.com/video/main.m3u8"}
+```
+
+**写法2：名称与URL成对阵列**（必须成对排列，不是单纯的URL清单）
+```python
+{"url": ["主畫質", "https://example.com/video/main.m3u8",
+         "低畫質", "https://example.com/video/low.m3u8"]}
+```
+
+**写法3：values物件**
+```python
+{"url": {"values": [
+    {"n": "主畫質", "v": "https://example.com/video/main.m3u8"},
+    {"n": "低畫質", "v": "https://example.com/video/low.m3u8"}
+], "position": 0}}  # position是从0起算的画质索引
+```
+
+### 集数字符串格式（三级分隔符，最精妙的设计）
+
+```
+分隔符层级：
+  $$$  →  分隔播放分组（线路）
+  #    →  分隔同组集数
+  $    →  分隔集数名称与id
+```
+
+**示例**：
+```python
+{
+    "vod_play_from": "主線路$$$備用線路",
+    "vod_play_url": "第 01 集$demo://ep/1#第 02 集$demo://ep/2$$$第 01 集$backup://ep/1"
+}
+```
+
+**解析结果**：
+- 主線路：第01集(demo://ep/1)、第02集(demo://ep/2)
+- 備用線路：第01集(backup://ep/1)
+
+**精妙之处**：用户点击某集后，右侧的value（如`demo://ep/1`）会成为`playerContent(flag, id, …)`的id参数！自定义协议前缀（`demo://`）在`playerContent`中用`resolve()`转换为真实URL，实现延迟解析。
+
+### localProxy完整返回格式（依执行环境区分）
+
+**QuickJS/Python一般阵列模式**：
+```python
+def localProxy(self, param):
+    return [200, "text/plain; charset=utf-8", "demo response",
+            {"Cache-Control": "no-cache"}]
+```
+格式：`[状态码, Content-Type, 内容, 选填标头]`
+- 第5格表示Base64内容
+- Python第三格也可直接回传`bytes`
+- 失败返回`[404, "text/plain", ""]`，勿返回None
+
+**Java的Object[]模式**：第三格必须是`InputStream`，不能直接放字符串或bytes；也可只回传一格`NanoHTTPD.Response`。
+
+**代理请求路由**：请求带`siteKey`时交给对应Spider的`localProxy`；JAR模式没有siteKey时找`com.github.catvod.spider.Proxy.proxy(Map)`静态入口。
+
+### 常用资料物件（Vod/Class/Filter）
+
+**Vod物件**：`vod_id`(传给detail的唯一值)、`vod_name`(显示名称)、`vod_pic`/`vod_remarks`(缩图与角标)、`type_name`(分类文字)、`vod_year`/`vod_area`(年份与地区)、`vod_director`/`vod_actor`(人员资讯)、`vod_content`(详细描述)、`vod_play_from`/`vod_play_url`(播放分组与集数)、`vod_tag`/`action`(folder表示资料夹；action为自订操作)、`land`/`circle`/`ratio`/`style`(卡片外观覆盖)。
+
+**Class物件**：`type_id`/`id`(传给category的分类ID)、`type_name`/`name`(分类显示名称)、`type_flag`(1代表资料夹分类)、`land`/`circle`/`ratio`(该分类预设卡片样式)、`filters`(也可在分类物件内提供Filter阵列)。
+
+**Filter物件**：`key`/`name`(传入键与显示名称)、`init`(预设选项值)、`value`(选项阵列，如`[{"n":"全部","v":""}]`；n是显示名称，v是传入值)。
+
+---
+
 ## Cloudflare 穿透五通道（按优先级回退）
 
 > 融合遮天九秘 cf-bypass 四层降级与本技能原有四通道，合并为五层降级：requests→cloudscraper→curl_cffi多指纹→FlareSolverr→备用域名。完整对比见 `references/zhetian-jiubi-armor-reference.md` 第二节。
