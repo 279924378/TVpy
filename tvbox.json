@@ -183,6 +183,13 @@
       "ext": ""
     },
     {
+      "key": "炮兵网",
+      "name": "炮兵网",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️炮兵网.py",
+      "ext": ""
+    },
+    {
       "key": "熟妇公寓",
       "name": "熟妇公寓",
       "type": 3,
@@ -506,6 +513,13 @@
       "name": "日久生情",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️日久生情.py",
+      "ext": ""
+    },
+    {
+      "key": "炮兵网",
+      "name": "炮兵网",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️炮兵网.py",
       "ext": ""
     }
   ],
