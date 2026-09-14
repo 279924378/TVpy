@@ -51,8 +51,13 @@ def fetch_url(url, timeout=TIMEOUT):
 
 
 def download_py(url, local_path):
-    """下载py文件到本地"""
-    req = urllib.request.Request(url, headers={"User-Agent": UA_CHROME})
+    """下载py文件到本地（自动处理中文URL编码）"""
+    # 把URL路径部分做编码，处理中文文件名
+    parsed = urllib.parse.urlparse(url)
+    encoded_path = urllib.parse.quote(parsed.path)
+    encoded_url = urllib.parse.urlunparse((parsed.scheme, parsed.netloc, encoded_path, parsed.params, parsed.query, parsed.fragment))
+    
+    req = urllib.request.Request(encoded_url, headers={"User-Agent": UA_CHROME})
     resp = urllib.request.urlopen(req, timeout=30, context=SSL_CTX)
     with open(local_path, "wb") as f:
         f.write(resp.read())
