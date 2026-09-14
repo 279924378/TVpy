@@ -113,6 +113,13 @@
       "ext": ""
     },
     {
+      "key": "抖阴破解",
+      "name": "抖阴破解",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️抖阴破解.py",
+      "ext": ""
+    },
+    {
       "key": "探索妹妹",
       "name": "探索妹妹",
       "type": 3,
@@ -534,6 +541,13 @@
       "name": "妙笔影院",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️妙笔影院.py",
+      "ext": ""
+    },
+    {
+      "key": "抖阴破解",
+      "name": "抖阴破解",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️抖阴破解.py",
       "ext": ""
     }
   ],
