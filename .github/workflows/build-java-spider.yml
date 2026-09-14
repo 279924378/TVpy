@@ -25,41 +25,41 @@ jobs:
       - name: Download catvod SDK from TVBox repo
         run: |
           mkdir -p java-spider/libs
-          # 从TVBox官方仓库下载catvod-sdk.jar
           curl -L -o java-spider/libs/catvod-sdk.jar \
             "https://github.com/FongMi/TV/raw/main/app/libs/catvod-sdk.jar" || \
           curl -L -o java-spider/libs/catvod-sdk.jar \
             "https://raw.githubusercontent.com/FongMi/TV/main/app/libs/catvod-sdk.jar" || \
-          echo "SDK下载失败，将用stub类编译"
+          echo "SDK下载失败，继续编译"
+          ls -la java-spider/libs/
       
       - name: Compile Java Spider
         run: |
           cd java-spider
-          # 编译所有Java文件
           mkdir -p build
           javac -source 1.8 -target 1.8 \
             -cp libs/* \
             -d build \
-            src/main/java/com/github/catvod/spider/*.java || \
-          echo "编译失败，检查SDK是否存在"
+            src/main/java/com/github/catvod/spider/*.java
+          echo "编译成功"
+          ls -la build/com/github/catvod/spider/
       
       - name: Package JAR
         run: |
-          cd java-spider/build
-          jar cf ../ShenYeMedia.jar com/
-          ls -la ../*.jar
+          cd java-spider
+          jar cf ShenYeMedia.jar -C build .
+          ls -la ShenYeMedia.jar
       
       - name: Upload JAR as artifact
         uses: actions/upload-artifact@v4
         with:
           name: shenye-media-jar
-          path: java-spider/*.jar
+          path: java-spider/ShenYeMedia.jar
       
       - name: Commit JAR back to repo
         run: |
           cd java-spider
           git config --global user.email "bot@tvbox.dev"
           git config --global user.name "TVBox Bot"
-          git add *.jar
+          git add ShenYeMedia.jar
           git commit -m "auto: build ShenYeMedia.jar" || echo "No changes"
           git push || echo "Push skipped"
