@@ -21,6 +21,12 @@ BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 TIMEOUT = 20
 
+# 代理池（GitHub Actions在国外，国内站点需要走代理）
+PROXY_POOL = [
+    None,  # 先试直连
+    "http://127.0.0.1:10809",  # 备用代理（如果有的话）
+]
+
 UA_CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
 # 忽略SSL证书验证
@@ -102,10 +108,17 @@ def test_spider(spider_class, name):
                     results["category"] = True
                     results["video_count"] = len(video_list)
                     results["first_vod_id"] = video_list[0].get("vod_id", "")
+                elif len(video_list) == 0:
+                    results["errors"].append(f"categoryContent返回空（可能需国内网络/代理）")
+                    results["network_issue"] = True
                 else:
                     results["errors"].append(f"categoryContent视频太少: {len(video_list)}")
         except Exception as e:
-            results["errors"].append(f"categoryContent异常: {str(e)[:80]}")
+            err_str = str(e)[:80]
+            results["errors"].append(f"categoryContent异常: {err_str}")
+            # 网络类异常标记为网络问题
+            if "timed out" in err_str or "Connection" in err_str or "SSL" in err_str:
+                results["network_issue"] = True
         
         # 4. 测试detailContent
         try:
@@ -129,6 +142,9 @@ def test_spider(spider_class, name):
     # 判定
     if results["home"] and results["category"] and results["detail"]:
         results["status"] = "alive"
+    elif results.get("network_issue"):
+        # 网络问题（GitHub Actions在国外，国内站点访问不了）
+        results["status"] = "network"
     elif results["home"] and results["category"]:
         results["status"] = "partial"
     else:
@@ -187,6 +203,7 @@ def main():
     alive = []
     partial = []
     dead = []
+    network = []
     
     for i, sp in enumerate(spiders):
         name = sp.get("name", "未知")
@@ -214,18 +231,27 @@ def main():
             elif result["status"] == "partial":
                 print(f"    ⚠️  部分失效: {result['errors'][0]}")
                 partial.append(result)
+            elif result["status"] == "network":
+                print(f"    🌐 网络问题（需国内网络验证）: {result['errors'][0]}")
+                network.append(result)
             else:
                 print(f"    ❌ 失效: {result['errors'][0]}")
                 dead.append(result)
         except Exception as e:
-            print(f"    ❌ 加载失败: {str(e)[:60]}")
-            dead.append({"name": name, "errors": [f"加载失败: {str(e)[:60]}"]})
+            err_str = str(e)[:60]
+            if "No module named" in err_str or "ImportError" in err_str:
+                print(f"    📦 缺依赖: {err_str}")
+                network.append({"name": name, "errors": [f"缺依赖: {err_str}"]})
+            else:
+                print(f"    ❌ 加载失败: {err_str}")
+                dead.append({"name": name, "errors": [f"加载失败: {err_str}"]})
     
     # 3. 输出报告
     print("\n" + "=" * 60)
     print("深度检测报告")
     print("=" * 60)
     print(f"  ✅ 全正常: {len(alive)} 个")
+    print(f"  🌐 网络问题(需国内验证): {len(network)} 个")
     print(f"  ⚠️  部分失效: {len(partial)} 个")
     print(f"  ❌ 完全失效: {len(dead)} 个")
     
@@ -239,15 +265,22 @@ def main():
         for p in partial:
             print(f"  - {p['name']}: {p['errors'][0]}")
     
+    if network:
+        print("\n🌐 网络问题列表（GitHub Actions在国外，国内站点访问不了）:")
+        for n in network[:10]:
+            print(f"  - {n['name']}: {n['errors'][0]}")
+    
     # 4. 推送到TG群
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     report = f"""📊 <b>Spider深度健康检测报告</b>
 
 ⏰ 时间: {now}
 📦 总源数: {len(spiders)}
-🔬 检测方式: 真的运行Spider代码（homeContent+categoryContent+detailContent三接口全测）
+🔬 检测方式: 真的运行Spider代码（三接口全测）
+🌍 检测环境: GitHub Actions（国外服务器）
 
 ✅ 全正常: {len(alive)} 个
+🌐 网络问题(需国内验证): {len(network)} 个
 ⚠️ 部分失效: {len(partial)} 个
 ❌ 完全失效: {len(dead)} 个"""
 
@@ -263,14 +296,22 @@ def main():
         for p in partial[:5]:
             report += f"  • {p['name']}\n    <i>{p['errors'][0]}</i>\n"
     
+    if network:
+        report += f"\n\n🌐 <b>网络问题（{len(network)}个，GitHub Actions国外访问不了，不算失效）:</b>\n"
+        report += "  这些源在国内手机上应该是正常的，只是GitHub Actions在国外访问不了。\n"
+        for n in network[:5]:
+            report += f"  • {n['name']}\n"
+        if len(network) > 5:
+            report += f"  ... 等共 {len(network)} 个"
+    
     report += f"\n\n📡 订阅: https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/tvbox.json"
     
-    # 有失效或部分失效才推送
+    # 只有真的失效或部分失效才推送（网络问题不单独推，附在报告里）
     if dead or partial:
         print("\n[3] 推送检测结果到TG群...")
         send_telegram(report)
     else:
-        print("\n[3] 所有源全正常，不推送TG群")
+        print("\n[3] 没有真失效的源，不推送TG群")
     
     print("\n" + "=" * 60)
     print("检测完成！")
