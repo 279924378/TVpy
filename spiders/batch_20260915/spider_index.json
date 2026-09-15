@@ -1,0 +1,84 @@
+{
+  "generated": [
+    {
+      "filename": "spider_cmkuuzbpj7hair.py",
+      "site_name": "cmk.uuzbpj7.hair",
+      "url": "https://cmk.uuzbpj7.hair/uuzbpj/",
+      "cms": "苹果CMS",
+      "categories": 10
+    },
+    {
+      "filename": "spider_深液传媒.py",
+      "site_name": "深液传媒",
+      "url": "https://edi.sycm8.lat/sycm/",
+      "cms": "苹果CMS",
+      "categories": 16
+    },
+    {
+      "filename": "spider_女菩萨X博主精选画廊.py",
+      "site_name": "女菩萨 · X 博主精选画廊",
+      "url": "https://nv-pu-sa.pages.dev/",
+      "cms": "unknown",
+      "categories": 0
+    },
+    {
+      "filename": "spider_秋霞影院.py",
+      "site_name": "秋霞影院",
+      "url": "https://brflqo.qxyy2.pics/qxyy/",
+      "cms": "苹果CMS",
+      "categories": 12
+    },
+    {
+      "filename": "spider_完美人妻.py",
+      "site_name": "完美人妻",
+      "url": "https://zkx.wmrq3.wiki/wmrq/",
+      "cms": "苹果CMS",
+      "categories": 11
+    },
+    {
+      "filename": "spider_色中色在线视频.py",
+      "site_name": "色中色在线视频",
+      "url": "https://spnhmx.szssp7.autos/szssp/",
+      "cms": "苹果CMS",
+      "categories": 16
+    },
+    {
+      "filename": "spider_夜晚小树林.py",
+      "site_name": "夜晚小树林",
+      "url": "https://www.ywxsl5.ink/ywxsl/",
+      "cms": "苹果CMS",
+      "categories": 14
+    },
+    {
+      "filename": "spider_熟妇公寓.py",
+      "site_name": "熟妇公寓",
+      "url": "https://mrt.sfgy9.fit/cn/home/web/",
+      "cms": "苹果CMS变种",
+      "categories": 11
+    },
+    {
+      "filename": "spider_日久生情.py",
+      "site_name": "日久生情",
+      "url": "https://aej.rjsq2.skin/rjsq/",
+      "cms": "苹果CMS",
+      "categories": 0
+    },
+    {
+      "filename": "spider_炮兵网.py",
+      "site_name": "炮兵网",
+      "url": "https://mef.pbw7.quest/pbw/",
+      "cms": "苹果CMS",
+      "categories": 0
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/tvbox.json",
+      "reason": "JSON配置文件"
+    },
+    {
+      "url": "https://raw.liucn.cc/box/m.json",
+      "reason": "JSON配置文件"
+    }
+  ]
+}
