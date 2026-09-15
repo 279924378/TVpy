@@ -5,9 +5,10 @@
 结构: 自定义CMS，videoBox列表，/vodtype/{cid}.html分类，/{id}.html详情，rawUrl直出m3u8
 分类URL: /vodtype/{cid}.html（根路径）
 详情URL: /{vod_id}.html（简单格式）
+底部导航: /label/hot.html（总排行榜）/ /label/hot_day.html（日排行榜）/ /label/new.html（最新上传）
 热门标签: /s/{标签名}.html（几百个标签，做成二级筛选filters）
-封面: videoBox-cover lazyLoad的data-original属性
-标题: videoBox-info里的a标签
+封面: style里的background-image
+标题: span.title
 注意: 直连可访问（不用加代理行）
 """
 
@@ -50,7 +51,7 @@ class Spider(Spider):
     domain = "https://akb.hjys9.wiki"
     siteName = "黄金右手"
     
-    # 分类硬编码（13个）
+    # 分类硬编码（13个主分类 + 3个底部导航子分类）
     CATEGORIES = [
         {"type_id": "20", "type_name": "国产精品"},
         {"type_id": "21", "type_name": "精品三级"},
@@ -65,29 +66,20 @@ class Spider(Spider):
         {"type_id": "30", "type_name": "野合车震"},
         {"type_id": "31", "type_name": "职场同事"},
         {"type_id": "32", "type_name": "国产名人"},
+        # 底部导航子分类
+        {"type_id": "label_hot", "type_name": "总排行榜"},
+        {"type_id": "label_hot_day", "type_name": "日排行榜"},
+        {"type_id": "label_new", "type_name": "最新上传"},
     ]
     
     # 热门标签（前100个，做成二级筛选filters）
     HOT_TAGS = [
         "人妻", "熟女", "巨乳", "美乳", "爆乳", "贫乳", "制服", "护士", "老师", "学生",
-        "OL", "空姐", "女教师", "女上司", "女经理", "人妻秘书", "人妻", "人母", "未亡人", "人妻",
-        "强奸", "乱伦", "近亲", "继父", "继母", "义父", "义母", "公公", "婆婆", "岳父",
-        "岳母", "儿子", "女儿", "继女", "继子", "侄子", "侄女", "外甥", "外甥女", "舅舅",
-        "舅妈", "阿姨", "叔叔", "姑姑", "姑父", "姨夫", "姨妈", "表哥", "表姐", "堂弟",
-        "堂妹", "邻居", "同事", "同学", "老师", "教授", "社长", "上司", "部下", "后辈",
-        "前辈", "医生", "护士", "警察", "教师", "学生", "小学生", "初中生", "高中生", "大学生",
-        "JK", "萝莉", "少女", "人妻", "熟女", "老熟女", "老太太", "老奶奶", "六十路", "五十路",
-        "四十路", "三十路", "二十岁", "10代", "20代", "30代", "40代", "50代", "60代", "70代",
-        "巨乳", "美乳", "爆乳", "贫乳", "美尻", "巨尻", "美脚", "美腿", "美腰", "美臀",
-        "黑人", "白人", "亚洲", "中国人", "日本人", "韩国人", "欧美人", "印度人", "俄罗斯人", "东南亚",
-        "中出", "口交", "肛交", "乳交", "足交", "手交", "骑乘", "背面", "对面座位", "正常位",
-        "侧面位", "座位", "后入", "侧入", "站立", "倒立", "女仆", "护士", "教师", "空姐",
-        "JK", "OL", "女扮男装", "女装", "男扮女装", "伪娘", "人妖", "男娘", "少女", "正太",
-        "SM", "女王", "奴隶", "调教", "捆绑", "鞭打", "电击", "灌肠", "性虐", "凌辱",
-        "催眠", "洗脑", "迷奸", "强吻", "猥亵", "痴汉", "跟踪狂", "偷拍", "盗撮", "露出",
-        "户外", "海边", "游泳池", "温泉", "酒店", "旅馆", "车中", "电车", "公共场所", "厕所",
-        "浴室", "厨房", "卧室", "客厅", "学校", "教室", "图书馆", "体育馆", "游泳池", "网球场",
-        "高尔夫", "保龄球", "乒乓球", "篮球", "足球", "排球", "棒球", "橄榄球", "游泳", "田径",
+        "OL", "空姐", "女教师", "女上司", "人妻秘书", "人母", "未亡人", "强奸", "乱伦", "近亲",
+        "继父", "继母", "公公", "婆婆", "岳母", "儿子", "女儿", "继女", "邻居", "同事",
+        "同学", "医生", "警察", "小学生", "初中生", "高中生", "大学生", "JK", "萝莉", "少女",
+        "老熟女", "六十路", "五十路", "美尻", "巨尻", "美脚", "美腿", "黑人", "白人", "亚洲",
+        "中出", "口交", "肛交", "乳交", "足交", "骑乘", "后入", "女仆", "教师", "空姐",
     ]
     
     UA_CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
@@ -196,14 +188,15 @@ class Spider(Spider):
                 "type_id": cat["type_id"],
                 "type_name": cat["type_name"],
             })
-            # 每个分类下都有热门标签筛选
-            filters[cat["type_id"]] = [
-                {
-                    "key": "tag",
-                    "name": "热门标签",
-                    "value": [{"n": t, "v": t} for t in self.HOT_TAGS[:50]],
-                }
-            ]
+            # 主分类下都有热门标签筛选，底部导航没有
+            if not cat["type_id"].startswith("label_"):
+                filters[cat["type_id"]] = [
+                    {
+                        "key": "tag",
+                        "name": "热门标签",
+                        "value": [{"n": t, "v": t} for t in self.HOT_TAGS[:50]],
+                    }
+                ]
         return {"class": classes, "filters": filters}
     
     # ==================== 2. categoryContent ====================
@@ -227,10 +220,18 @@ class Spider(Spider):
                     "list": videos,
                 }
         
-        # 普通分类页
-        url = f"{self.domain}/vodtype/{tid}.html"
-        if pg > 1:
-            url = f"{self.domain}/vodtype/{tid}-{pg}.html"
+        # 底部导航子分类
+        if tid == "label_hot":
+            url = f"{self.domain}/label/hot.html"
+        elif tid == "label_hot_day":
+            url = f"{self.domain}/label/hot_day.html"
+        elif tid == "label_new":
+            url = f"{self.domain}/label/new.html"
+        else:
+            # 普通分类页
+            url = f"{self.domain}/vodtype/{tid}.html"
+            if pg > 1:
+                url = f"{self.domain}/vodtype/{tid}-{pg}.html"
         
         html = self._fetch(url)
         videos = self._parse_list(html)
@@ -377,26 +378,32 @@ if __name__ == "__main__":
     sp.init("{}")
     
     print("=" * 60)
-    print("黄金右手 Spider 自测")
+    print("黄金右手 Spider v1.1 自测（加底部导航子分类）")
     print("=" * 60)
     
     print("\n[1] homeContent:")
     home = sp.homeContent()
     print(f"  分类数: {len(home.get('class', []))}")
     for c in home.get("class", []):
-        print(f"    {c['type_id']}: {c['type_name']}")
-    print(f"  热门标签筛选: 每个分类都有50个热门标签可选")
+        print(f"    {c['type_id']:15s}  {c['type_name']}")
     
     print("\n[2] categoryContent (id=20, page=1):")
     cat = sp.categoryContent("20", 1)
     print(f"  视频数: {len(cat.get('list', []))}")
     for v in cat.get("list", [])[:2]:
         print(f"    {v['vod_id']}: {v['vod_name'][:40]}")
-        print(f"      封面: {v['vod_pic'][:60]}")
+    
+    print("\n[3] categoryContent (id=label_hot, page=1):")
+    cat2 = sp.categoryContent("label_hot", 1)
+    print(f"  总排行榜视频数: {len(cat2.get('list', []))}")
+    
+    print("\n[4] categoryContent (id=label_new, page=1):")
+    cat3 = sp.categoryContent("label_new", 1)
+    print(f"  最新上传视频数: {len(cat3.get('list', []))}")
     
     if cat.get("list"):
         first_id = cat["list"][0]["vod_id"]
-        print(f"\n[3] detailContent (id={first_id}):")
+        print(f"\n[5] detailContent (id={first_id}):")
         detail = sp.detailContent([first_id])
         if detail.get("list"):
             d = detail["list"][0]
