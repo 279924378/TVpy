@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 茎洞入口 Spider
 # 站点: https://faq.jdrk5.yachts/jdrk/
-# 类型: 苹果CMS
+# 真实结构: <article class="thumb-block"> + <img data-original> + m3u8在JS里
 
 try:
     from base.spider import Spider as BaseSpider
@@ -60,7 +60,12 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        items = re.findall(r'<a[^>]*href="(/\d+\.html)"[^>]*>.*?data-original="([^"]*)"[^>]*>.*?</a>', html, re.S)
+        # 真实结构: <a href="/123.html"><img class="lazy" data-original="..."/></a>
+        items = re.findall(
+            r'<a[^>]*href="(/\d+\.html)"[^>]*>.*?data-original="([^"]*)"',
+            html, re.S
+        )
+        
         video_list = []
         for href, pic in items[:72]:
             vid = href.replace(".html", "").replace("/", "")
@@ -87,6 +92,7 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
+        # 真实结构: m3u8在JS里
         m3u8_match = re.search(r"https?://[^\s'\"<>;]+\.m3u8", html)
         m3u8_url = m3u8_match.group(0) if m3u8_match else ""
         
