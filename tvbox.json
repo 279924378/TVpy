@@ -746,6 +746,13 @@
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 1
+    },
+    {
+      "key": "媚惑山庄",
+      "name": "媚惑山庄",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️媚惑山庄.py",
+      "ext": ""
     }
   ],
   "parses": [
