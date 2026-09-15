@@ -112,7 +112,7 @@ class Spider(BaseSpider):
             "vod_duration": "",
             "vod_content": "",
             "vod_play_from": "高清",
-            "vod_play_url": "第1集$$$" + m3u8_url,
+            "vod_play_url": m3u8_url + "$$$第1集",
         }]
         return result
 
