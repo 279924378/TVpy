@@ -60,7 +60,7 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: <a href="/123.html"><img class="lazy" data-original="..."/></a>
+        # 真实结构: <a href="/123.html"><img data-original="..."/></a>
         items = re.findall(
             r'<a[^>]*href="(/\d+\.html)"[^>]*>.*?data-original="([^"]*)"',
             html, re.S
@@ -92,10 +92,11 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: m3u8在JS里
-        m3u8_match = re.search(r"https?://[^\s'\"<>;]+\.m3u8", html)
-        m3u8_url = m3u8_match.group(0) if m3u8_match else ""
+        # 真实结构: 'https://xxx.m3u8';
+        m3u8_match = re.search(r"'(https?://[^']+\.m3u8)'", html)
+        m3u8_url = m3u8_match.group(1) if m3u8_match else ""
         
+        # 标题
         title_match = re.search(r'<h1[^>]*>([^<]*)</h1>', html)
         title = title_match.group(1).strip() if title_match else vid
         
@@ -111,7 +112,7 @@ class Spider(BaseSpider):
             "vod_duration": "",
             "vod_content": "",
             "vod_play_from": "高清",
-            "vod_play_url": title + "$$$$" + m3u8_url,
+            "vod_play_url": "第1集$$$" + m3u8_url,
         }]
         return result
 
