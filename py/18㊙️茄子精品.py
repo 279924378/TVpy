@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 茄子精品 Spider
 # 站点: https://oxh.qzjp4.beer/qzjp/
-# 真实结构: <li class="fed-list-item"> + <a data-original> + m3u8在JS里
+# 真实结构: <li class="fed-list-item"> + <a class="fed-list-pics" data-original> + player_data.url
 
 try:
     from base.spider import Spider as BaseSpider
@@ -22,7 +22,7 @@ except ImportError:
 class Spider(BaseSpider):
 
     def init(self, extend=""):
-        self.siteUrl = "https://oxh.qzjp4.beer/cn/home/web"
+        self.siteUrl = "https://oxh.qzjp4.beer"
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
             "Referer": self.siteUrl + "/",
@@ -52,32 +52,35 @@ class Spider(BaseSpider):
         import urllib.request
         import re
         result = {}
-        url = f"{self.siteUrl}/index.php/vod/type/id/{tid}.html"
+        url = f"{self.siteUrl}/cn/home/web/index.php/vod/type/id/{tid}.html"
         if int(pg) > 1:
-            url = f"{self.siteUrl}/index.php/vod/type/id/{tid}/page/{pg}.html"
+            url = f"{self.siteUrl}/cn/home/web/index.php/vod/type/id/{tid}-{pg}.html"
         req = urllib.request.Request(url, headers=self.headers)
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: <a class="fed-list-pics" href="/cn/home/web/index.php/vod/play/id/123/sid/1/nid/1.html" data-original="...">
+        # 真实结构: <li class="fed-list-item"><a class="fed-list-pics" href="..." data-original="..."><a class="fed-list-title" href="...">标题</a></li>
         items = re.findall(
-            r'<a[^>]*class="fed-list-pics[^"]*"[^>]*href="([^"]*vod/play/id/(\d+)[^"]*)"[^>]*data-original="([^"]*)"',
-            html
+            r'<a[^>]*class="fed-list-pics[^"]*"[^>]*href="([^"]*)"[^>]*data-original="([^"]*)"[^>]*>.*?<a[^>]*class="fed-list-title[^"]*"[^>]*>([^<]*)</a>',
+            html, re.S
         )
         
         video_list = []
-        for href, vid, pic in items[:36]:
+        for href, pic, title in items[:120]:
+            # 提取vod_id
+            m = re.search(r'/id/(\d+)/', href)
+            vid = m.group(1) if m else href
             video_list.append({
                 "vod_id": vid,
-                "vod_name": vid,
+                "vod_name": title,
                 "vod_pic": pic,
                 "vod_remarks": "",
             })
         result["list"] = video_list
         result["page"] = pg
         result["pagecount"] = 100
-        result["limit"] = 36
-        result["total"] = 3600
+        result["limit"] = 120
+        result["total"] = 12000
         return result
 
     def detailContent(self, ids):
@@ -85,7 +88,7 @@ class Spider(BaseSpider):
         import re
         result = {}
         vid = ids[0]
-        url = f"{self.siteUrl}/index.php/vod/play/id/{vid}/sid/1/nid/1.html"
+        url = f"{self.siteUrl}/cn/home/web/index.php/vod/play/id/{vid}/sid/1/nid/1.html"
         req = urllib.request.Request(url, headers=self.headers)
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
@@ -96,7 +99,8 @@ class Spider(BaseSpider):
         if m3u8_match:
             m3u8_url = m3u8_match.group(1).replace("\\/", "/")
         
-        title_match = re.search(r'<title>([^<]*)</title>', html)
+        # 标题
+        title_match = re.search(r'<h1[^>]*>([^<]*)</h1>', html)
         title = title_match.group(1).strip() if title_match else vid
         
         result["list"] = [{
@@ -111,7 +115,7 @@ class Spider(BaseSpider):
             "vod_duration": "",
             "vod_content": "",
             "vod_play_from": "高清",
-            "vod_play_url": title + "$$$$" + m3u8_url,
+            "vod_play_url": m3u8_url,
         }]
         return result
 
