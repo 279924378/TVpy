@@ -61,14 +61,8 @@ class Spider(BaseSpider):
         url = f"{self.siteUrl}/cn/home/web/index.php/vod/type/id/{tid}.html"
         if int(pg) > 1:
             url = f"{self.siteUrl}/cn/home/web/index.php/vod/type/id/{tid}-{pg}.html"
-        # 本地调试用代理，TVBox壳内运行时自动走全局代理
-        proxy_handler = urllib.request.ProxyHandler({
-            "http": "http://127.0.0.1:7890",
-            "https": "http://127.0.0.1:7890"
-        })
-        opener = urllib.request.build_opener(proxy_handler)
         req = urllib.request.Request(url, headers=self.headers)
-        resp = opener.open(req, timeout=15)
+        resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
         # 真实结构: <div class="video-item"><a href="...vod/play/id/..."><div class="log"><img src="..."/></div><div class="title">标题</div></a></div>
@@ -101,14 +95,8 @@ class Spider(BaseSpider):
         result = {}
         vid = ids[0]
         url = f"{self.siteUrl}/cn/home/web/index.php/vod/play/id/{vid}/sid/1/nid/1.html"
-        # 本地调试用代理，TVBox壳内运行时自动走全局代理
-        proxy_handler = urllib.request.ProxyHandler({
-            "http": "http://127.0.0.1:7890",
-            "https": "http://127.0.0.1:7890"
-        })
-        opener = urllib.request.build_opener(proxy_handler)
         req = urllib.request.Request(url, headers=self.headers)
-        resp = opener.open(req, timeout=15)
+        resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
         # 真实结构: player_data={"url":"https:\/\/xxx.m3u8"}
