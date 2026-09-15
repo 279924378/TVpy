@@ -45,14 +45,8 @@ class Spider(Spider):
     def _fetch(self, url, timeout=20):
         headers = {"User-Agent": self.UA_CHROME, "Referer": self.domain + "/"}
         try:
-            # 本地调试用代理，TVBox壳内自动走全局代理
-            proxy_handler = urllib.request.ProxyHandler({
-                "http": "http://127.0.0.1:10809",
-                "https": "http://127.0.0.1:10809"
-            })
-            opener = urllib.request.build_opener(proxy_handler)
             req = urllib.request.Request(url, headers=headers)
-            resp = opener.open(req, timeout=timeout)
+            resp = urllib.request.urlopen(req, timeout=timeout)
             return resp.read().decode("utf-8", errors="replace")
         except: return ""
     
