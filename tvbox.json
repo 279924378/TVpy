@@ -731,6 +731,15 @@
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 1
+    },
+    {
+      "key": "hscs",
+      "name": "黄色超市",
+      "type": 3,
+      "api": "py/18㊙️黄色超市.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
     }
   ],
   "parses": [
