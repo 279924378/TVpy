@@ -641,6 +641,15 @@
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0
+    },
+    {
+      "key": "skyw",
+      "name": "时空尤物",
+      "type": 3,
+      "api": "py/18㊙️时空尤物.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
     }
   ],
   "parses": [
