@@ -15,6 +15,13 @@
       "ext": ""
     },
     {
+      "key": "AV女优馆",
+      "name": "AV女优馆",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️AV女优馆.py",
+      "ext": ""
+    },
+    {
       "key": "Didi长视频",
       "name": "Didi长视频",
       "type": 3,
@@ -590,6 +597,13 @@
       "name": "万物复苏",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️万物复苏.py",
+      "ext": ""
+    },
+    {
+      "key": "AV女优馆",
+      "name": "AV女优馆",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️AV女优馆.py",
       "ext": ""
     }
   ],
