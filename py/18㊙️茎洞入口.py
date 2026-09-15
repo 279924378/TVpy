@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 茎洞入口 Spider
 # 站点: https://faq.jdrk5.yachts/jdrk/
-# 真实结构: <article class="thumb-block"> + <img data-original> + m3u8在JS里
+# 真实结构: <a> + <img data-original> + const rawUrl = 'xxx.m3u8'
 
 try:
     from base.spider import Spider as BaseSpider
@@ -92,8 +92,8 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: 'https://xxx.m3u8';
-        m3u8_match = re.search(r"'(https?://[^']+\.m3u8)'", html)
+        # 真实结构: const rawUrl = 'https://xxx.m3u8';
+        m3u8_match = re.search(r"const rawUrl\s*=\s*'([^']+\.m3u8)'", html)
         m3u8_url = m3u8_match.group(1) if m3u8_match else ""
         
         # 标题
@@ -112,7 +112,7 @@ class Spider(BaseSpider):
             "vod_duration": "",
             "vod_content": "",
             "vod_play_from": "高清",
-            "vod_play_url": "第1集$$$" + m3u8_url,
+            "vod_play_url": m3u8_url,
         }]
         return result
 
