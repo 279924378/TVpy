@@ -1,212 +1,145 @@
-# -*- coding: utf-8 -*-
-"""
-探索妹妹 四壳通用Python Spider
-站点: https://www.tsmm3.boats/tsmm/
-特点: 自定义CMS（107vip48_wtpl模板），m3u8直链在详情页HTML中
-分类: 10个分类
-注意: 实际访问URL不带/tsmm/前缀
-"""
 
-import re
-import json
+# -*- coding: utf-8 -*-
+# 探索妹妹 Spider
+# 站点: https://www.tsmm3.boats/tsmm/
+# 真实结构: <a href="/123.html"><img src="..."/></a> + const rawUrl='xxx.m3u8'
 
 try:
-    from base.spider import Spider
-except Exception:
-    class Spider:
-        def __init__(self):
-            self.extend = {}
-        def init(self, extend):
-            self.extend = extend or {}
+    from base.spider import Spider as BaseSpider
+except ImportError:
+    class BaseSpider:
+        def init(self, extend=""): pass
+        def homeContent(self, filter): return {}
+        def categoryContent(self, tid, pg, filter, extend): return {}
+        def detailContent(self, ids): return {}
+        def searchContent(self, key, quick, pg): return {}
+        def playerContent(self, flag, id, vipFlags): return {}
+        def localProxy(self, param): return [404, "text/plain", ""]
+        def isVideoFormat(self, url): return False
+        def manualVideoCheck(self): return False
+        def getName(self): return ""
 
-class Spider(Spider):
-    def __init__(self):
-        super().__init__()
-        self.siteUrl = "https://www.tsmm3.boats"
-        self.rawSite = "https://www.tsmm3.boats"
-        self.HOST = self.siteUrl
-        self.cookie = ""
-        self.ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+class Spider(BaseSpider):
 
     def init(self, extend=""):
-        if extend and isinstance(extend, str):
-            try:
-                self.extend = json.loads(extend)
-            except Exception:
-                self.extend = {}
-        elif extend and isinstance(extend, dict):
-            self.extend = extend
-        else:
-            self.extend = {}
-        if self.extend.get("siteUrl"):
-            self.siteUrl = self.extend["siteUrl"]
-            self.HOST = self.siteUrl
-        if self.extend.get("rawSite"):
-            self.rawSite = self.extend["rawSite"]
-
-    def homeContent(self, *args):
-        classes = [
-            {"type_id": "20", "type_name": "绝美少女"},
-            {"type_id": "21", "type_name": "激情口交"},
-            {"type_id": "22", "type_name": "亚洲日韩"},
-            {"type_id": "23", "type_name": "人妖激情"},
-            {"type_id": "24", "type_name": "重咸口味"},
-            {"type_id": "25", "type_name": "国产专区"},
-            {"type_id": "26", "type_name": "日韩专区"},
-            {"type_id": "27", "type_name": "欧美专区"},
-            {"type_id": "28", "type_name": "卡通动漫"},
-            {"type_id": "29", "type_name": "三级伦理"},
-        ]
-        filters = {}
-        for c in classes:
-            filters[c["type_id"]] = [
-                {"key": "class", "name": "分类", "value": [{"n": "全部", "v": ""}]},
-            ]
-        list = self._parse_list(self._get(f"{self.siteUrl}/vodtype/20.html"))
-        return {"class": classes, "list": list[:6], "filters": filters}
-
-    def categoryContent(self, tid, page, *args):
-        page = int(page) if page else 1
-        if page <= 1:
-            url = f"{self.siteUrl}/vodtype/{tid}.html"
-        else:
-            url = f"{self.siteUrl}/vodtype/{tid}-{page}.html"
-        html = self._get(url)
-        list = self._parse_list(html)
-        total = len(list)
-        pagecount = 999 if total >= 36 else 1
-        return {"page": page, "pagecount": pagecount, "limit": 36, "total": total * pagecount, "list": list}
-
-    def detailContent(self, ids, *args):
-        if not ids:
-            return {"list": []}
-        if isinstance(ids, str):
-            ids = [ids]
-        list = []
-        for vod_id in ids:
-            if not vod_id:
-                continue
-            if vod_id.startswith("http"):
-                url = vod_id
-            elif vod_id.startswith("/"):
-                url = f"{self.siteUrl}{vod_id}"
-            else:
-                url = f"{self.siteUrl}/{vod_id}.html"
-            html = self._get(url)
-            if not html:
-                continue
-            title = ""
-            title_match = re.search(r'<title>([^<]+)</title>', html)
-            if title_match:
-                title = title_match.group(1).replace("正在播放:", "").replace("正在播放", "").strip()
-                title = re.sub(r"\s*[-–—]\s*探索妹妹\s*$", "", title).strip()
-            pic = ""
-            pic_match = re.search(r'<img[^>]*src=["\']([^"\']+)["\']', html)
-            if pic_match:
-                pic = pic_match.group(1)
-            play_url = ""
-            m3u8_match = re.search(r'["\']([^"\']+\.m3u8[^"\']*)["\']', html)
-            if m3u8_match:
-                play_url = m3u8_match.group(1)
-            vod_play_from = "探索妹妹"
-            vod_play_url = f"第1集${play_url}" if play_url else ""
-            list.append({
-                "vod_id": vod_id,
-                "vod_name": title,
-                "vod_pic": pic,
-                "vod_remarks": "",
-                "vod_content": title,
-                "vod_play_from": vod_play_from,
-                "vod_play_url": vod_play_url,
-            })
-        return {"list": list}
-
-    def playerContent(self, flag, id, vipFlags, *args):
-        url = id
-        if not url.startswith("http"):
-            url = f"{self.siteUrl}/{url}"
-        return {
-            "parse": 0,
-            "jx": 0,
-            "url": url,
-            "header": {
-                "User-Agent": self.ua,
-                "Referer": f"{self.rawSite}/",
-                "Origin": self.rawSite,
-            },
+        self.siteUrl = "https://www.tsmm3.boats"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+            "Referer": self.siteUrl + "/",
         }
 
-    def searchContent(self, key, page, *args):
-        from urllib.parse import quote
-        page = int(page) if page else 1
-        url = f"{self.siteUrl}/s/index.html?wd={quote(key)}"
-        html = self._get(url)
-        list = self._parse_list(html)
-        return {"page": page, "pagecount": 1, "limit": 36, "total": len(list), "list": list}
+    def homeContent(self, filter):
+        result = {}
+        class_parse = [
+            {"type_name": "绝美少女", "type_id": "20"},
+            {"type_name": "激情口交", "type_id": "21"},
+            {"type_name": "亚洲日韩", "type_id": "22"},
+            {"type_name": "人妖激情", "type_id": "23"},
+            {"type_name": "重咸口味", "type_id": "24"},
+            {"type_name": "国产专区", "type_id": "25"},
+            {"type_name": "日韩专区", "type_id": "26"},
+            {"type_name": "欧美专区", "type_id": "27"},
+            {"type_name": "卡通动漫", "type_id": "28"},
+            {"type_name": "三级伦理", "type_id": "29"},
+        ]
+        result["class"] = class_parse
+        result["filters"] = {}
+        result["list"] = []
+        return result
 
-    def _parse_list(self, html):
-        if not html:
-            return []
-        list = []
-        # 107vip48_wtpl模板：封面链接+标题分开（和Didi长视频一样）
-        # 封面：<a href="/123.html"><img src="封面"></a>
-        # 标题：<h5><a href="/123.html" class="title">标题</a></h5>
-        title_items = re.findall(r'href=["\']/(\d+)\.html["\'][^>]*class=["\']title["\'][^>]*>(.*?)</a>', html, re.DOTALL)
-        pic_items = re.findall(r'href=["\']/(\d+)\.html["\'][^>]*>\s*<img[^>]*src=["\']([^"\']+)["\']', html, re.DOTALL)
-        pic_map = {vid: pic for vid, pic in pic_items}
-
-        # 如果title方式没匹配到，尝试备用方式
-        if not title_items:
-            alt_items = re.findall(r'href=["\']/(\d+)\.html["\'][^>]*>\s*<img[^>]*alt=["\']([^"\']+)["\']', html, re.DOTALL)
-            title_items = [(vid, title) for vid, title in alt_items if title]
-
-        seen = set()
-        for vod_id, content in title_items:
-            if vod_id in seen:
-                continue
-            seen.add(vod_id)
-            title = re.sub(r"<[^>]+>", "", content).strip()
-            pic = pic_map.get(vod_id, "")
-            if title and len(title) > 1:
-                list.append({
-                    "vod_id": vod_id,
-                    "vod_name": title,
-                    "vod_pic": pic,
-                    "vod_remarks": "",
-                })
-        return list
-
-    def _get(self, url):
-        try:
-            import urllib.request
-            import ssl
-            ctx = ssl.create_default_context()
-            ctx.check_hostname = False
-            ctx.verify_mode = ssl.CERT_NONE
-            proxy_handler = urllib.request.ProxyHandler({})
-            opener = urllib.request.build_opener(proxy_handler, urllib.request.HTTPSHandler(context=ctx))
-            req = urllib.request.Request(url, headers={
-                "User-Agent": self.ua,
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language": "zh-CN,zh;q=0.9",
+    def categoryContent(self, tid, pg, filter, extend):
+        import urllib.request
+        import re
+        result = {}
+        url = f"{self.siteUrl}/vodtype/{tid}.html"
+        if int(pg) > 1:
+            url = f"{self.siteUrl}/vodtype/{tid}-{pg}.html"
+        req = urllib.request.Request(url, headers=self.headers)
+        resp = urllib.request.urlopen(req, timeout=15)
+        html = resp.read().decode("utf-8", errors="ignore")
+        
+        # 真实结构: <div class="recommended-grids english-grid">...<a href="/123.html"><img src="..."/></a>...<h5><a href="/123.html" class="title">标题</a></h5>...
+        items = re.findall(
+            r'<a href="/(\d+)\.html"[^>]*>.*?<img[^>]*src="([^"]*)"[^>]*/>.*?<h5>.*?<a[^>]*class="title"[^>]*>([^<]*)</a>',
+            html, re.S
+        )
+        
+        video_list = []
+        for vid, pic, title in items[:60]:
+            video_list.append({
+                "vod_id": vid,
+                "vod_name": title.strip(),
+                "vod_pic": pic,
+                "vod_remarks": "",
             })
-            resp = opener.open(req, timeout=20)
-            return resp.read().decode("utf-8", errors="ignore")
-        except Exception as e:
-            print(f"[探索妹妹] 请求失败 {url}: {e}")
-            return ""
+        result["list"] = video_list
+        result["page"] = pg
+        result["pagecount"] = 100
+        result["limit"] = 60
+        result["total"] = 6000
+        return result
 
-    def getDependence(self, *args):
-        return ""
+    def detailContent(self, ids):
+        import urllib.request
+        import re
+        result = {}
+        vid = ids[0]
+        url = f"{self.siteUrl}/{vid}.html"
+        req = urllib.request.Request(url, headers=self.headers)
+        resp = urllib.request.urlopen(req, timeout=15)
+        html = resp.read().decode("utf-8", errors="ignore")
+        
+        # 真实结构: const rawUrl = 'https://xxx.m3u8'
+        m3u8_match = re.search(r"rawUrl\s*=\s*['\"](https?://[^'\"]+\.m3u8[^'\"]*)['\"]", html)
+        m3u8_url = ""
+        if m3u8_match:
+            m3u8_url = m3u8_match.group(1)
+        
+        # 标题
+        title_match = re.search(r'<h1[^>]*>([^<]*)</h1>', html)
+        title = title_match.group(1).strip() if title_match else vid
+        
+        result["list"] = [{
+            "vod_id": vid,
+            "vod_name": title,
+            "vod_pic": "",
+            "vod_remarks": "",
+            "vod_year": "",
+            "vod_area": "",
+            "vod_letter": "",
+            "vod_class": "",
+            "vod_duration": "",
+            "vod_content": "",
+            "vod_play_from": "高清",
+            "vod_play_url": m3u8_url,
+        }]
+        return result
 
-    def localProxy(self, *args):
+    def searchContent(self, key, quick, pg):
+        result = {}
+        result["list"] = []
+        result["page"] = pg
+        result["pagecount"] = 1
+        result["limit"] = 20
+        result["total"] = 0
+        return result
+
+    def playerContent(self, flag, id, vipFlags):
+        result = {}
+        result["parse"] = 0
+        result["jx"] = 0
+        result["url"] = id
+        result["header"] = self.headers
+        return result
+
+    def localProxy(self, param):
         return [404, "text/plain", ""]
 
-    def isVideoFormat(self, url, *args):
-        return any(url.endswith(ext) for ext in [".m3u8", ".mp4", ".avi", ".mkv", ".flv"])
-
-    def manualVideoCheck(self, *args):
+    def isVideoFormat(self, url):
         return False
 
-    def destroy(self, *args):
-        pass
+    def manualVideoCheck(self):
+        return False
+
+    def getName(self):
+        return "探索妹妹"
