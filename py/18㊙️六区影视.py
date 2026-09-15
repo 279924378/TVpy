@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-六区影视 - 四壳通用Python Spider
-站点: https://6181027.xyz/（六区，从跳转站解析出来的真实域名）
+十区影视 - 四壳通用Python Spider（v1.1修复版）
+站点: 从跳转站解析出的10个独立域名
 结构: 自定义CMS，视频信息直接编码在URL里（?v=m3u8&b=封面图）
-列表URL: /index.php/vod/type/id/{cid}.html
+列表URL: https://{domain}/index.php/{type}/type/id/{id}.html
 视频URL: /html/dcdc/{乱码标题}.html?v={m3u8}&b={封面图}
 封面: img.lazy的data-original属性
 标题: p.km-script标签
@@ -46,22 +46,21 @@ except Exception:
 
 # ==================== 主Spider类 ====================
 class Spider(Spider):
-    domain = "https://6181027.xyz"
-    siteName = "六区影视"
+    siteName = "十区影视"
     
-    # 分类硬编码
-    CATEGORIES = [
-        {"type_id": "13", "type_name": "一区"},
-        {"type_id": "1", "type_name": "二区"},
-        {"type_id": "66", "type_name": "三区"},
-        {"type_id": "5", "type_name": "四区"},
-        {"type_id": "2", "type_name": "五区"},
-        {"type_id": "44", "type_name": "六区"},
-        {"type_id": "40", "type_name": "七区"},
-        {"type_id": "66", "type_name": "八区"},
-        {"type_id": "35", "type_name": "九区"},
-        {"type_id": "27", "type_name": "漫画"},
-    ]
+    # 10个区的配置（每个区对应不同域名）
+    QU_CONFIG = {
+        "13": {"name": "一区", "domain": "618026.xyz", "type": "vod", "id": "13"},
+        "1":  {"name": "二区", "domain": "618315.xyz", "type": "vod", "id": "1"},
+        "66": {"name": "三区", "domain": "618126.xyz", "type": "vod", "id": "66"},
+        "5":  {"name": "四区", "domain": "618156.xyz", "type": "art", "id": "5"},
+        "2":  {"name": "五区", "domain": "618407.xyz", "type": "vod", "id": "2"},
+        "44": {"name": "六区", "domain": "618250.xyz", "type": "vod", "id": "44"},
+        "40": {"name": "七区", "domain": "618614.xyz", "type": "vod", "id": "40"},
+        "66b": {"name": "八区", "domain": "618695.xyz", "type": "vod", "id": "66"},
+        "35": {"name": "九区", "domain": "618736.xyz", "type": "vod", "id": "35"},
+        "27": {"name": "漫画", "domain": "618768.xyz", "type": "art", "id": "27"},
+    }
     
     UA_CHROME = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     
@@ -93,7 +92,6 @@ class Spider(Spider):
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Connection": "keep-alive",
-            "Referer": self.domain + "/",
         }
         req = urllib.request.Request(url, headers=headers)
         try:
@@ -115,25 +113,25 @@ class Spider(Spider):
             return ""
         return re.sub(r"<[^>]+>", "", html).strip()
     
-    # ==================== 解析列表（vodbox结构） ====================
+    # ==================== 解析列表（vodbox + xowe-thumb-bl两种模板） ====================
     def _parse_list(self, html):
         videos = []
         seen_urls = set()
         
-        # 找所有vodbox项
-        items = re.findall(r'<a class="vodbox"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)
-        
-        for href, item_html in items:
+        # 模板1: vodbox（一区/二区/三区/八区）
+        items1 = re.findall(r'<a class="vodbox"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.S)
+        for href, item_html in items1:
             try:
-                # 从href里解析m3u8和封面图
-                # 格式: /html/dcdc/{标题}.html?v={m3u8}&b={封面图}
                 m3u8_url = ""
                 cover_url = ""
                 
-                # 提取v参数（m3u8）
-                v_match = re.search(r'[?&]v=([^&]+)', href)
-                if v_match:
-                    m3u8_url = urllib.parse.unquote(v_match.group(1))
+                # 提取m3u8：支持多种参数名 v/kd/id/m
+                m3u8_url = ""
+                for param in ["v", "kd", "id", "m"]:
+                    match = re.search(rf'[?&]{param}=([^&]+)', href)
+                    if match:
+                        m3u8_url = urllib.parse.unquote(match.group(1))
+                        break
                 
                 # 提取b参数（封面图）
                 b_match = re.search(r'[?&]b=([^&]+)', href)
@@ -150,7 +148,6 @@ class Spider(Spider):
                     vod_name = self._strip_tags(title_match.group(1)).strip()
                 
                 if not vod_name or len(vod_name) < 3:
-                    # 备用：从URL里提取
                     vod_name = f"视频{len(videos)+1}"
                 
                 # 封面：优先从img的data-original提取，备用从b参数
@@ -161,7 +158,6 @@ class Spider(Spider):
                 elif cover_url:
                     vod_pic = cover_url
                 
-                # 用m3u8的hash作为vod_id（唯一标识）
                 vod_id = m3u8_url
                 if vod_id in seen_urls:
                     continue
@@ -175,15 +171,53 @@ class Spider(Spider):
                 })
             except Exception:
                 continue
+        
+        # 模板2: xowe-thumb-bl（四区/其他区）
+        # 直接找所有 /html/*.html?m= 格式的链接
+        items2 = re.findall(r'href="(/html/[^"]+\.html\?m=([^&"]+)[^"]*)"', html)
+        for href, m3u8_path in items2:
+            try:
+                m3u8_url = urllib.parse.unquote(m3u8_path)
+                
+                # 从href找标题（从父元素里找）
+                vod_name = ""
+                # 找xowe-thumb-name
+                name_match = re.search(r'xowe-thumb-name[^"]*">(.*?)</div>', html, re.S)
+                if name_match:
+                    vod_name = self._strip_tags(name_match.group(1)).strip()
+                
+                if not vod_name or len(vod_name) < 3:
+                    vod_name = f"视频{len(videos)+1}"
+                
+                # 封面：从img的data-cover提取
+                vod_pic = ""
+                pic_match = re.search(r'data-cover="([^"]+\.(?:jpg|jpeg|png))"', html)
+                if pic_match:
+                    vod_pic = pic_match.group(1)
+                
+                vod_id = href
+                if vod_id in seen_urls:
+                    continue
+                seen_urls.add(vod_id)
+                
+                videos.append({
+                    "vod_id": vod_id,
+                    "vod_name": vod_name,
+                    "vod_pic": vod_pic,
+                    "vod_remarks": "",
+                })
+            except Exception:
+                continue
+        
         return videos
     
     # ==================== 1. homeContent ====================
     def homeContent(self, filter=False):
         classes = []
-        for cat in self.CATEGORIES:
+        for tid, cfg in self.QU_CONFIG.items():
             classes.append({
-                "type_id": cat["type_id"],
-                "type_name": cat["type_name"],
+                "type_id": tid,
+                "type_name": cfg["name"],
             })
         return {"class": classes, "filters": {}}
     
@@ -191,9 +225,24 @@ class Spider(Spider):
     def categoryContent(self, tid, pg, filter=False, extend=None):
         pg = int(pg) if pg else 1
         
-        url = f"{self.domain}/index.php/vod/type/id/{tid}.html"
+        # 根据tid选择对应的区配置
+        qu_cfg = self.QU_CONFIG.get(tid)
+        if not qu_cfg:
+            return {
+                "page": pg,
+                "pagecount": pg,
+                "limit": 20,
+                "total": 0,
+                "list": [],
+            }
+        
+        domain = qu_cfg["domain"]
+        vtype = qu_cfg["type"]
+        vid = qu_cfg["id"]
+        
+        url = f"https://{domain}/index.php/{vtype}/type/id/{vid}.html"
         if pg > 1:
-            url = f"{self.domain}/index.php/vod/type/id/{tid}-{pg}.html"
+            url = f"https://{domain}/index.php/{vtype}/type/id/{vid}-{pg}.html"
         
         html = self._fetch(url)
         videos = self._parse_list(html)
@@ -220,22 +269,18 @@ class Spider(Spider):
                 if not m3u8_url:
                     continue
                 
-                # 直接返回m3u8，不需要访问详情页
                 vod_id = m3u8_url
                 vod_name = f"视频{len(list_data)+1}"
                 vod_pic = ""
                 
-                # 尝试从m3u8 URL推断封面图（不太准确，留空）
-                # 实际上封面图已经在列表页解析过了，这里留空就行
-                
-                vod_play_from = "六区影视"
+                vod_play_from = "十区影视"
                 vod_play_url = f"第1集${m3u8_url}"
                 
                 detail = {
                     "vod_id": vod_id,
                     "vod_name": vod_name,
                     "vod_pic": vod_pic,
-                    "vod_remarks": "六区影视",
+                    "vod_remarks": "十区影视",
                     "vod_actor": "",
                     "vod_director": "",
                     "vod_content": "",
@@ -304,7 +349,7 @@ if __name__ == "__main__":
     sp.init("{}")
     
     print("=" * 60)
-    print("六区影视 Spider 自测")
+    print("十区影视 Spider v1.1 自测（每个区独立域名）")
     print("=" * 60)
     
     print("\n[1] homeContent:")
@@ -313,28 +358,12 @@ if __name__ == "__main__":
     for c in home.get("class", []):
         print(f"    {c['type_id']:5s}  {c['type_name']}")
     
-    print("\n[2] categoryContent (id=13, page=1):")
-    cat = sp.categoryContent("13", 1)
-    print(f"  视频数: {len(cat.get('list', []))}")
-    for v in cat.get("list", [])[:3]:
-        print(f"    {v['vod_name'][:40]}")
-        print(f"      封面: {v['vod_pic'][:60]}")
-        print(f"      m3u8: {v['vod_id'][:80]}")
-    
-    if cat.get("list"):
-        first_m3u8 = cat["list"][0]["vod_id"]
-        print(f"\n[3] detailContent (id={first_m3u8[:50]}...):")
-        detail = sp.detailContent([first_m3u8])
-        if detail.get("list"):
-            d = detail["list"][0]
-            print(f"  标题: {d['vod_name'][:50]}")
-            print(f"  播放线路: {d['vod_play_from']}")
-            play_urls = d['vod_play_url'].split("#")
-            print(f"  播放集数: {len(play_urls)}")
-            for pu in play_urls[:1]:
-                print(f"    {pu[:100]}")
-        else:
-            print("  无详情数据")
+    # 测试每个区
+    print("\n[2] 测试每个区的视频数:")
+    for tid, cfg in sp.QU_CONFIG.items():
+        cat = sp.categoryContent(tid, 1)
+        count = len(cat.get("list", []))
+        print(f"  {cfg['name']:5s} ({cfg['domain']}): {count} 个视频")
     
     print("\n" + "=" * 60)
     print("自测完成!")
