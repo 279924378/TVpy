@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 茄子精品 Spider
 # 站点: https://oxh.qzjp4.beer/qzjp/
-# 类型: 苹果CMS
+# 真实结构: <li class="fed-list-item"> + <a data-original> + m3u8在JS里
 
 try:
     from base.spider import Spider as BaseSpider
@@ -59,11 +59,14 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        items = re.findall(r'<a[^>]*class="fed-list-pics[^"]*"[^>]*href="([^"]*)"[^>]*data-original="([^"]*)"', html)
+        # 真实结构: <a class="fed-list-pics" href="/cn/home/web/index.php/vod/play/id/123/sid/1/nid/1.html" data-original="...">
+        items = re.findall(
+            r'<a[^>]*class="fed-list-pics[^"]*"[^>]*href="([^"]*vod/play/id/(\d+)[^"]*)"[^>]*data-original="([^"]*)"',
+            html
+        )
+        
         video_list = []
-        for href, pic in items[:36]:
-            vid_match = re.search(r'/id/(\d+)', href)
-            vid = vid_match.group(1) if vid_match else href
+        for href, vid, pic in items[:36]:
             video_list.append({
                 "vod_id": vid,
                 "vod_name": vid,
@@ -87,8 +90,11 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        m3u8_match = re.search(r"https?://[^\s'\"<>;]+\.m3u8", html)
-        m3u8_url = m3u8_match.group(0) if m3u8_match else ""
+        # 真实结构: player_data={"url":"https:\/\/xxx.m3u8"}
+        m3u8_match = re.search(r'"url":"(https?:\\?/\\?/[^"]+\.m3u8[^"]*)"', html)
+        m3u8_url = ""
+        if m3u8_match:
+            m3u8_url = m3u8_match.group(1).replace("\\/", "/")
         
         title_match = re.search(r'<title>([^<]*)</title>', html)
         title = title_match.group(1).strip() if title_match else vid
