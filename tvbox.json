@@ -50,6 +50,13 @@
       "ext": ""
     },
     {
+      "key": "万物复苏",
+      "name": "万物复苏",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️万物复苏.py",
+      "ext": ""
+    },
+    {
       "key": "中神通",
       "name": "中神通",
       "type": 3,
@@ -576,6 +583,13 @@
       "name": "Porn00",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️Porn00.py",
+      "ext": ""
+    },
+    {
+      "key": "万物复苏",
+      "name": "万物复苏",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️万物复苏.py",
       "ext": ""
     }
   ],
