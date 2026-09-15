@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 媚惑山庄 Spider
 # 站点: https://dimcqf.mhsz2.boats/mhsz/
-# 真实结构: <a class="thumbnail"> + <img src> + m3u8在JS里
+# 真实结构: <a class="thumbnail"> + <img src> + awUrl变量
 
 try:
     from base.spider import Spider as BaseSpider
@@ -60,7 +60,7 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: <a href="/123.html" title="..." class="thumbnail"><div class="video-thumb"><img src="..."/></div></a>
+        # 真实结构: <a href="/123.html" title="..." class="thumbnail"><div><img src="..."/></div></a>
         items = re.findall(
             r'<a[^>]*href="(/\d+\.html)"[^>]*title="([^"]*)"[^>]*class="thumbnail"[^>]*>.*?<img[^>]*src="([^"]*)"',
             html, re.S
@@ -92,9 +92,9 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: m3u8在JS里，如 'https://fqm3u8.cc/20260106/TvOttcKw/index.m3u8'
-        m3u8_match = re.search(r"https?://[^\s'\"<>;]+\.m3u8", html)
-        m3u8_url = m3u8_match.group(0) if m3u8_match else ""
+        # 真实结构: awUrl = 'https://xxx.m3u8';
+        m3u8_match = re.search(r"awUrl\s*=\s*'([^']+\.m3u8)'", html)
+        m3u8_url = m3u8_match.group(1) if m3u8_match else ""
         
         # 标题
         title_match = re.search(r'<h1[^>]*>([^<]*)</h1>', html)
@@ -112,7 +112,7 @@ class Spider(BaseSpider):
             "vod_duration": "",
             "vod_content": "",
             "vod_play_from": "高清",
-            "vod_play_url": title + "$$$$" + m3u8_url,
+            "vod_play_url": "第1集$$$" + m3u8_url,
         }]
         return result
 
