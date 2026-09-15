@@ -668,6 +668,33 @@
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0
+    },
+    {
+      "key": "yjss",
+      "name": "御姐宿舍",
+      "type": 3,
+      "api": "py/18㊙️御姐宿舍.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
+    },
+    {
+      "key": "lqfl",
+      "name": "猎奇福利",
+      "type": 3,
+      "api": "py/18㊙️猎奇福利.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
+    },
+    {
+      "key": "khl",
+      "name": "快活林",
+      "type": 3,
+      "api": "py/18㊙️快活林.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
     }
   ],
   "parses": [
