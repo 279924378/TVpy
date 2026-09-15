@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 媚惑山庄 Spider
 # 站点: https://dimcqf.mhsz2.boats/mhsz/
-# 类型: 苹果CMS
+# 真实结构: <a class="thumbnail"> + <img src> + m3u8在JS里
 
 try:
     from base.spider import Spider as BaseSpider
@@ -60,13 +60,18 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        items = re.findall(r'<a[^>]*href="(/\d+\.html)"[^>]*>.*?<img[^>]*src="([^"]*)"[^>]*>.*?</a>', html, re.S)
+        # 真实结构: <a href="/123.html" title="..." class="thumbnail"><div class="video-thumb"><img src="..."/></div></a>
+        items = re.findall(
+            r'<a[^>]*href="(/\d+\.html)"[^>]*title="([^"]*)"[^>]*class="thumbnail"[^>]*>.*?<img[^>]*src="([^"]*)"',
+            html, re.S
+        )
+        
         video_list = []
-        for href, pic in items[:60]:
+        for href, title, pic in items[:60]:
             vid = href.replace(".html", "").replace("/", "")
             video_list.append({
                 "vod_id": vid,
-                "vod_name": vid,
+                "vod_name": title,
                 "vod_pic": pic,
                 "vod_remarks": "",
             })
@@ -87,19 +92,18 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        m3u8_match = re.search(r"https?://[^\s'\"<>]+\.m3u8", html)
+        # 真实结构: m3u8在JS里，如 'https://fqm3u8.cc/20260106/TvOttcKw/index.m3u8'
+        m3u8_match = re.search(r"https?://[^\s'\"<>;]+\.m3u8", html)
         m3u8_url = m3u8_match.group(0) if m3u8_match else ""
         
+        # 标题
         title_match = re.search(r'<h1[^>]*>([^<]*)</h1>', html)
         title = title_match.group(1).strip() if title_match else vid
-        
-        pic_match = re.search(r'<meta[^>]*property="og:image"[^>]*content="([^"]*)"', html)
-        pic = pic_match.group(1) if pic_match else ""
         
         result["list"] = [{
             "vod_id": vid,
             "vod_name": title,
-            "vod_pic": pic,
+            "vod_pic": "",
             "vod_remarks": "",
             "vod_year": "",
             "vod_area": "",
