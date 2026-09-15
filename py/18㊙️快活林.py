@@ -57,10 +57,10 @@ class Spider(Spider):
         videos = []
         seen = set()
         
-        # post-medium结构
-        items = re.findall(r'<div class="post post-medium">(.*?)</div>\s*</div>\s*</div>', html, re.S)
-        for item in items:
-            m = re.search(r'<a[^>]*href="/(\d+)\.html"[^>]*>', item)
+        # 找所有article标签
+        articles = re.findall(r'<article[^>]*>(.*?)</article>', html, re.S)
+        for art in articles:
+            m = re.search(r'href="/(\d+)\.html"', art)
             if not m: continue
             vid = m.group(1)
             if vid in seen or len(vid) < 5: continue
@@ -68,14 +68,14 @@ class Spider(Spider):
             
             # 标题
             name = ""
-            t = re.search(r'<h4><a[^>]*>(.*?)</a></h4>', item, re.S)
+            t = re.search(r'<h4><a[^>]*>(.*?)</a></h4>', art, re.S)
             if t:
                 name = re.sub(r'<[^>]+>', '', t.group(1)).strip()
-            if not name or len(name) < 3: continue
+            if not name or len(name) < 2: continue
             
             # 封面
             pic = ""
-            p = re.search(r'<img[^>]*src="([^"]+\.(?:jpg|jpeg|png))"', item)
+            p = re.search(r'<img[^>]*src="([^"]+\.(?:jpg|jpeg|png))"', art)
             if p: pic = p.group(1)
             
             videos.append({"vod_id": vid, "vod_name": name, "vod_pic": pic, "vod_remarks": ""})
