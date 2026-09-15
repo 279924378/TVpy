@@ -605,6 +605,15 @@
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️AV女优馆.py",
       "ext": ""
+    },
+    {
+      "key": "hjys",
+      "name": "黄金右手",
+      "type": 3,
+      "api": "py/18㊙️黄金右手.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 1
     }
   ],
   "parses": [
