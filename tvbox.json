@@ -29,13 +29,6 @@
       "ext": ""
     },
     {
-      "key": "JavDB",
-      "name": "JavDB",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️JavDB.py",
-      "ext": ""
-    },
-    {
       "key": "Porn00",
       "name": "Porn00",
       "type": 3,
@@ -239,13 +232,6 @@
       "ext": ""
     },
     {
-      "key": "百年直播",
-      "name": "百年直播",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️百年直播.py",
-      "ext": ""
-    },
-    {
       "key": "皇朝会所",
       "name": "皇朝会所",
       "type": 3,
@@ -257,13 +243,6 @@
       "name": "秋霞影院",
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️秋霞影院.py",
-      "ext": ""
-    },
-    {
-      "key": "聚合影视",
-      "name": "聚合影视",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️聚合影视.py",
       "ext": ""
     },
     {
