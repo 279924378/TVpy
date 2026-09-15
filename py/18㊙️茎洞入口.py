@@ -60,18 +60,18 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: <a href="/123.html"><img data-original="..."/></a>
+        # 真实结构: <a href="/123.html" title="标题"><img data-original="..."/></a>
         items = re.findall(
-            r'<a[^>]*href="(/\d+\.html)"[^>]*>.*?data-original="([^"]*)"',
+            r'<a[^>]*href="(/\d+\.html)"[^>]*title="([^"]*)"[^>]*>.*?data-original="([^"]*)"',
             html, re.S
         )
         
         video_list = []
-        for href, pic in items[:72]:
+        for href, title, pic in items[:72]:
             vid = href.replace(".html", "").replace("/", "")
             video_list.append({
                 "vod_id": vid,
-                "vod_name": vid,
+                "vod_name": title,
                 "vod_pic": pic,
                 "vod_remarks": "",
             })
