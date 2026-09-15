@@ -695,6 +695,24 @@
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0
+    },
+    {
+      "key": "xhd",
+      "name": "销魂洞",
+      "type": 3,
+      "api": "py/18㊙️销魂洞.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
+    },
+    {
+      "key": "yzrq",
+      "name": "野战人妻",
+      "type": 3,
+      "api": "py/18㊙️野战人妻.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
     }
   ],
   "parses": [
