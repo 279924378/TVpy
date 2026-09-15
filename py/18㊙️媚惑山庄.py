@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # 媚惑山庄 Spider
 # 站点: https://dimcqf.mhsz2.boats/mhsz/
-# 真实结构: <a class="thumbnail"> + <img src> + awUrl变量
+# 真实结构: <a class="thumbnail"> + <img src> + const rawUrl = 'xxx.m3u8'
 
 try:
     from base.spider import Spider as BaseSpider
@@ -92,8 +92,8 @@ class Spider(BaseSpider):
         resp = urllib.request.urlopen(req, timeout=15)
         html = resp.read().decode("utf-8", errors="ignore")
         
-        # 真实结构: awUrl = 'https://xxx.m3u8';
-        m3u8_match = re.search(r"awUrl\s*=\s*'([^']+\.m3u8)'", html)
+        # 真实结构: const rawUrl = 'https://xxx.m3u8';
+        m3u8_match = re.search(r"const rawUrl\s*=\s*'([^']+\.m3u8)'", html)
         m3u8_url = m3u8_match.group(1) if m3u8_match else ""
         
         # 标题
