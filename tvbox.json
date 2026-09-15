@@ -650,6 +650,24 @@
       "searchable": 1,
       "quickSearch": 0,
       "filterable": 0
+    },
+    {
+      "key": "msck",
+      "name": "魅色仓库",
+      "type": 3,
+      "api": "py/18㊙️魅色仓库.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
+    },
+    {
+      "key": "hys",
+      "name": "好淫社",
+      "type": 3,
+      "api": "py/18㊙️好淫社.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0
     }
   ],
   "parses": [
