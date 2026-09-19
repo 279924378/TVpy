@@ -507,6 +507,13 @@
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️少女禁区.py",
       "ext": ""
+    },
+    {
+      "key": "成人快播",
+      "name": "🔞成人区·成人快播",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️成人快播.py",
+      "ext": ""
     }
   ],
   "parses": [
