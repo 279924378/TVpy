@@ -514,6 +514,13 @@
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️成人快播.py",
       "ext": ""
+    },
+    {
+      "key": "樱桃影视",
+      "name": "🔞成人区·樱桃影视",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️樱桃影视.py",
+      "ext": ""
     }
   ],
   "parses": [
