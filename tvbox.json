@@ -486,6 +486,20 @@
       "type": 3,
       "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️黄上黄.py",
       "ext": ""
+    },
+    {
+      "key": "P站国产区",
+      "name": "🔞成人区·P站国产区",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️P站国产区.py",
+      "ext": ""
+    },
+    {
+      "key": "手鸡助手",
+      "name": "🔞成人区·手鸡助手",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/jwarrenrzflynn/TVpy/main/py/18㊙️手鸡助手.py",
+      "ext": ""
     }
   ],
   "parses": [
